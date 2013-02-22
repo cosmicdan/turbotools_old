@@ -1,6 +1,6 @@
 #NoTrayIcon
 #Region ;**** Directives created by AutoIt3Wrapper_GUI ****
-#AutoIt3Wrapper_Icon=..\~resources\ICON_099_MAIN.ico
+#AutoIt3Wrapper_Icon=..\~resources\ICON_000_MAIN.ico
 #AutoIt3Wrapper_Outfile=Turbo Tools.exe
 #AutoIt3Wrapper_Compression=4
 #AutoIt3Wrapper_Res_Comment=Turbo Tools
@@ -53,6 +53,10 @@ Global $aTTWinMainCurrentSize
 Global $aPageCtrl[99] ; Maximum of 100 controls per page
 ; Init globals for buttonrow
 Global $bButtonRow_CustomTask
+; Init globals for pagination
+Global $sCurrentPlugin
+Global $sCurrentPage
+Global $sPreviousPage
 
 _ExtMsgBoxSet(1, 0, -1, -1, -1, -1)
 
@@ -111,6 +115,9 @@ echo ("Bad Exit! Loop was broken! Probable interpreter crash...!")
 #Region ;~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~Global Event Handlers
 
 Func DrawPage($plugin, $inifile)
+	; update globals
+	$sCurrentPlugin = $plugin
+	$sCurrentPage = $inifile
 	; Remove all page controls before drawing new page
 	If IsArray($aPageCtrl) Then
 		Local $sPageCtrlCount = UBound($aPageCtrl)
@@ -127,7 +134,9 @@ Func DrawPage($plugin, $inifile)
 	If FileExists($sPage) = "0" Then
 		_ExtMsgBox($sResources, 0, "Internal Error", 'Page not found:' & @CRLF & _
 										'plugins\' & $plugin & '\' & $inifile & '.ini', _
-										0, $hTTWinMain, 0, -4)
+										0, $hTTWinMain, 0, -7)
+		; [TODO] Show error page, enable back button (use $sPreviousPage)
+		Return 0
 	EndIf
 	Local $buttonrow = IniRead($sPage, "common", "buttonrow", "0")
 	If $buttonrow = "1" Then
@@ -135,11 +144,11 @@ Func DrawPage($plugin, $inifile)
 		If @error Then
 			_ExtMsgBox($sResources, 0, "Internal Error", 'Error in plugins\' & $plugin & '\' & $inifile & '.ini' & @CRLF & _
 						'Section not found: [buttonrow]', _
-						0, $hTTWinMain, 0, -4)
+						0, $hTTWinMain, 0, -7)
 		Else
 			DoButtonBar()
 			For $i = 1 To $aTTBtn[0][0]
-				DoButtonRow($aTTBtn[$i][0],$aTTBtn[$i][1])
+				DoButtonRow($aTTBtn[$i][0],$aTTBtn[$i][1], 'plugins\' & $plugin & '\' & $inifile & '.ini')
 			Next
 		EndIf
 	EndIf
@@ -148,7 +157,7 @@ Func DrawPage($plugin, $inifile)
 		_ExtMsgBox($sResources, 0, "Internal Error", 'Error in plugins\' & $plugin & '\' & $inifile & '.ini' & @CRLF & _
 					'At section [common]' & @CRLF & _
 					'Key not found: "type"', _
-					0, $hTTWinMain, 0, -4)
+					0, $hTTWinMain, 0, -7)
 	Else
 		Select
 			Case $pagetype = "static"
@@ -159,7 +168,7 @@ Func DrawPage($plugin, $inifile)
 				_ExtMsgBox($sResources, 0, "Internal Error", 'Error in plugins\' & $plugin & '\' & $inifile & '.ini' & @CRLF & _
 							'At section [common]; key "type"' & @CRLF & _
 							'Unknown value: "' & $pagetype & '"', _
-							0, $hTTWinMain, 0, -4)
+							0, $hTTWinMain, 0, -7)
 		EndSelect
 	EndIf
 EndFunc
@@ -205,18 +214,28 @@ Func TTWinMainButtonEvent()
 	Switch @GUI_CtrlId
 		Case $hTTBtn[1]
 			If _GUICtrlButton_GetText($hTTBtn[1]) = "Options..." Then
-				_ExtMsgBox($sResources, 0, $sSysTitle, "Nothing to configure yet =)", 10, $hTTWinMain, 0, -10)
+				_ExtMsgBox($sResources, 0, $sSysTitle, "Nothing to configure yet =)", 10, $hTTWinMain, 0, -13)
 			EndIf
 		Case $hTTBtn[2]
 			If _GUICtrlButton_GetText($hTTBtn[2]) = "About..." Then
 				DialogAbout()
 			EndIf
 		Case $hTTBtn[3] ; custom
-			_ExtMsgBox($sResources, 0, $sSysTitle, "You pressed 'Custom' button", 10, $hTTWinMain, 0, -10)
+			_ExtMsgBox($sResources, 0, $sSysTitle, "You pressed 'Custom' button", 10, $hTTWinMain, 0, -5)
 		Case $hTTBtn[4] ; back
-			_ExtMsgBox($sResources, 0, $sSysTitle, "You pressed 'Back' button", 10, $hTTWinMain, 0, -10)
+			_ExtMsgBox($sResources, 0, $sSysTitle, "You pressed 'Back' button", 10, $hTTWinMain, 0, -5)
 		Case $hTTBtn[5] ; next
-			_ExtMsgBox($sResources, 0, $sSysTitle, "You pressed 'Next' button", 10, $hTTWinMain, 0, -10)
+			;_ExtMsgBox($sResources, 0, $sSysTitle, "You pressed 'Next' button", 10, $hTTWinMain, 0, -5)
+			Local $sNextPage = IniRead(@ScriptDir & '\plugins\' & $sCurrentPlugin & '\' & $sCurrentPage & '.ini', "buttonrow", "nextpage", "0")
+			If $sNextPage = "0" Then
+				_ExtMsgBox($sResources, 0, "Internal Error", 'Error in plugins\' & $sCurrentPlugin & '\' & $sCurrentPage & '.ini' & @CRLF & _
+					'At section [buttonrow]' & @CRLF & _
+					'Key not found: "nextpage"', _
+					0, $hTTWinMain, 0, -7)
+			Else
+				$sPreviousPage = $sCurrentPage
+				DrawPage($sCurrentPlugin, $sNextPage)
+			EndIf
 		Case $hTTBtn[6]
 			If _GUICtrlButton_GetText($hTTBtn[6]) = "Quit" Then
 				TTQuit()
@@ -235,7 +254,7 @@ Func TTQuit()
 	If Not $bCfgQuickQuit Then
 		; If pending task, show "warning - tasks pending" prompt
 		Local $result = _ExtMsgBox($sResources, 4, $sSysTitle, "Are you sure you want to quit?" & @CRLF & _
-									"All selected changes will be lost.", 0, $hTTWinMain, 0, -3)
+									"All selected changes will be lost.", 0, $hTTWinMain, 0, -6)
 		If $result = 1 Then
 			echo ("[#] User quit")
 			Exit

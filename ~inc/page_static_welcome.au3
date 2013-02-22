@@ -14,22 +14,25 @@ Func DoPageStaticWelcome($sPage, $sPluginPath, $sPluginFilename)
 		GUICtrlSetBkColor(-1, $sBannerFill)
 		GUICtrlSetResizing(-1, $GUI_DOCKTOP + $GUI_DOCKBOTTOM + $GUI_DOCKWIDTH)
 	; insert the HTML content
-	$aPageCtrl[2] = _IECreateEmbedded()
-		GUICtrlCreateObj($aPageCtrl[2], 190, 10, $aTTWinMainCurrentSize[0]-200,$aTTWinMainCurrentSize[1]-60)
+	Local $oIE = _IECreateEmbedded()
+	$aPageCtrl[2] = GUICtrlCreateObj($oIE, 190, 10, $aTTWinMainCurrentSize[0]-200,$aTTWinMainCurrentSize[1]-60)
 		GUICtrlSetResizing(-1, $GUI_DOCKLEFT + $GUI_DOCKRIGHT + $GUI_DOCKTOP + $GUI_DOCKBOTTOM)
-		_IENavigate($aPageCtrl[2], "about:blank")
+		_IENavigate($oIE, "about:blank")
 		Local $sHTML = IniRead($sPage, "static", "content", $sPluginFilename & '.html')
 		If FileExists(@ScriptDir & '\' & $sPluginPath & '\' & $sHTML) Then
-			_IEDocWriteHTML($aPageCtrl[2], FileRead(@ScriptDir & '\' & $sPluginPath & '\' & $sHTML))
+			_IEDocWriteHTML($oIE, FileRead(@ScriptDir & '\' & $sPluginPath & '\' & $sHTML))
 		Else
-			_IEDocWriteHTML($aPageCtrl[2], FileRead(@ScriptDir & '\plugins\core\error.html'))
+			_IEDocWriteHTML($oIE, FileRead(@ScriptDir & '\plugins\core\error.html'))
 			_ExtMsgBox($sResources, 0, "Internal Error", 'Error in ' & $sPluginPath & '\' & $sPluginFilename & '.ini' & @CRLF & _
 							'At section [common]; key "content"' & @CRLF & _
 							'File not found: "' & @ScriptDir & '\' & $sPluginPath & '\' & $sHTML & '"', _
-							0, $hTTWinMain, 0, -4)
+							0, $hTTWinMain, 0, -7)
 		EndIf
-		_IEAction($aPageCtrl[2], "refresh")
-		$aPageCtrl[2].document.body.scroll = "no"
+		_IEAction($oIE, "refresh")
+		Local $sScroll = IniRead($sPage, "static", "scroll", "0")
+		If $sScroll = "0" Then
+			$oIE.document.body.scroll = "no"
+		EndIf
 
 EndFunc
 
