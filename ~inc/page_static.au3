@@ -1,4 +1,4 @@
-Func DoPageStatic($sPage, $sPluginPath, $sPluginFilename)
+Func DoPageStatic($sPage, $sPluginPath, $sPluginFilename, $iIndexOfPageData)
 	Local $aPageStatic = IniReadSection($sPage, "static")
 	If @error Then
 		_ExtMsgBox($sResources, 0, "Internal Error", 'Error in ' & $sPluginPath & '\' & $sPluginFilename & '.ini' & @CRLF & _
@@ -14,7 +14,7 @@ Func DoPageStatic($sPage, $sPluginPath, $sPluginFilename)
 		Else
 			Select
 				Case $sPageType = "welcome"
-					DoPageStaticWelcome($sPage, $sPluginPath, $sPluginFilename)
+					DoPageStaticWelcome($sPage, $sPluginPath, $sPluginFilename, $iIndexOfPageData)
 				Case Else
 					_ExtMsgBox($sResources, 0, "Internal Error", 'Error in ' & $sPluginPath & '\' & $sPluginFilename & '.ini' & @CRLF & _
 							'At section [static]; key "type"' & @CRLF & _

@@ -1,8 +1,8 @@
 #NoTrayIcon
 #Region ;**** Directives created by AutoIt3Wrapper_GUI ****
-#AutoIt3Wrapper_Icon=..\~resources\ICON_000_MAIN.ico
+#AutoIt3Wrapper_Icon=~resources\ICON_000_MAIN.ico
 #AutoIt3Wrapper_Outfile=Turbo Tools.exe
-#AutoIt3Wrapper_Compression=4
+#AutoIt3Wrapper_Compression=0
 #AutoIt3Wrapper_Res_Comment=Turbo Tools
 #AutoIt3Wrapper_Res_Description=All-in-one tool for customizing Android
 #AutoIt3Wrapper_Res_Fileversion=0.1.0.0
@@ -31,6 +31,7 @@ echo("[#] Turbo Tools booting...")
 #include <EditConstants.au3>
 #include <FontConstants.au3>
 #include <IE.au3>
+#include <Array.au3>
 
 _IEErrorHandlerRegister()
 
@@ -38,6 +39,7 @@ Opt("GUIOnEventMode", 1)
 Opt("GUICloseOnESC", 0)
 Opt("MustDeclareVars", 1)
 
+#include "~udf\ArrayAdd2D.au3"
 #include "~udf\ExtMsgBox.au3"
 #include "~udf\GUICtrlSetOnHover.au3"
 #include "~udf\Resources.au3"
@@ -50,13 +52,15 @@ Global $sSysRev = "Free and Open-Source"
 
 
 Global $aTTWinMainCurrentSize
-Global $aPageCtrl[99] ; Maximum of 100 controls per page
+Global $aPluginPage[1] ;dynamic size array
+Global $aPageCtrl[1][99] ;dynamic size of pages, max of 99 elements per page
 ; Init globals for buttonrow
 Global $bButtonRow_CustomTask
 ; Init globals for pagination
 Global $sCurrentPlugin
 Global $sCurrentPage
-Global $sPreviousPage
+Global $sPreviousPage ; used internally for pagination
+Global $oIE = _IECreateEmbedded() ; persistent embedded IE object saves active x object (re/un)loading
 
 _ExtMsgBoxSet(1, 0, -1, -1, -1, -1)
 
@@ -90,12 +94,15 @@ Global $hTTWinMain = GUICreate($sSysTitle, 700, 500, -1, -1, BitOR($WS_OVERLAPPE
 echo ("[#] Loading core includes...")
 #include "~inc\about.au3"
 #include "~inc\buttonrow.au3"
+#include "~inc\datahelper.au3"
 echo ("[#] Loading page templates...")
 #include "~inc\page_static.au3"
 #include "~inc\page_static_welcome.au3"
 echo ("[i] Running.")
 
 GUISetState(@SW_SHOW)
+DoButtonBar()
+HideButtons()
 DrawPage("core", "page_welcome")
 
 While 1
@@ -118,17 +125,17 @@ Func DrawPage($plugin, $inifile)
 	; update globals
 	$sCurrentPlugin = $plugin
 	$sCurrentPage = $inifile
-	; Remove all page controls before drawing new page
-	If IsArray($aPageCtrl) Then
-		Local $sPageCtrlCount = UBound($aPageCtrl)
-		For $i = 0 to $sPageCtrlCount  - 1 ; clear page
-			GUICtrlDelete($aPageCtrl[$i])
-		Next
-	EndIf
-	; Remove button row elements before drawing new page
-	RemoveButtons()
 	; Get current window dimensions before drawing new page
 	$aTTWinMainCurrentSize = WinGetClientSize ($hTTWinMain)
+	; gather page data
+	Local $iIndexOfPageData = findpage($plugin & '|' & $inifile)
+	If Not $sPreviousPage = "" Then
+		; we've moved a page, hide all previous controls
+		Local $sPageCtrlCount = UBound($aPageCtrl, $iIndexOfPageData)
+		For $i = 0 to $sPageCtrlCount - 1 ; hide all controls on page
+			GUICtrlSetState($aPageCtrl[$iIndexOfPageData][$i], $GUI_HIDE)
+		Next
+	EndIf
 	; Start processing page INI
 	Local $sPage = @ScriptDir & '\plugins\' & $plugin & '\' & $inifile & '.ini'
 	If FileExists($sPage) = "0" Then
@@ -138,6 +145,7 @@ Func DrawPage($plugin, $inifile)
 		; [TODO] Show error page, enable back button (use $sPreviousPage)
 		Return 0
 	EndIf
+	HideButtons()
 	Local $buttonrow = IniRead($sPage, "common", "buttonrow", "0")
 	If $buttonrow = "1" Then
 		Local $aTTBtn = IniReadSection($sPage, "buttonrow")
@@ -146,7 +154,6 @@ Func DrawPage($plugin, $inifile)
 						'Section not found: [buttonrow]', _
 						0, $hTTWinMain, 0, -7)
 		Else
-			DoButtonBar()
 			For $i = 1 To $aTTBtn[0][0]
 				DoButtonRow($aTTBtn[$i][0],$aTTBtn[$i][1], 'plugins\' & $plugin & '\' & $inifile & '.ini')
 			Next
@@ -161,7 +168,7 @@ Func DrawPage($plugin, $inifile)
 	Else
 		Select
 			Case $pagetype = "static"
-				DoPageStatic($sPage, 'plugins\' & $plugin, $inifile)
+				DoPageStatic($sPage, 'plugins\' & $plugin, $inifile, $iIndexOfPageData)
 			Case $pagetype = "task"
 				;not implemented
 			Case Else
@@ -173,34 +180,6 @@ Func DrawPage($plugin, $inifile)
 	EndIf
 EndFunc
 
-#comments-start
-Func DrawPage_old($task)
-	If IsArray($TTPage) Then
-		Local $NumberOfControls = UBound($TTPage)
-		;echo("Items in the array: " & $NumberOfControls)
-		For $i = 0 to $NumberOfControls  - 1 ; clear page
-			GUICtrlDelete($APSPage[$i])
-		Next
-		Global $APSPage = 0
-		Global $APSPage[99]
-	EndIf
-	$aTTWinMainCurrentSize = WinGetClientSize ($hTTWinMain)
-	Select
-		Case $task = 1; next page
-			;$APSPageCurrent = $APSPageCurrent + 1
-			;Call ("Page" & $APSPageCurrent)
-		Case $task = 0 ; back a page
-			;$APSPageCurrent = $APSPageCurrent - 1
-			;Call ("Page" & $APSPageCurrent)
-		Case $task < 0 ; specific page is requested
-			$task = StringReplace($task, "-", "")
-			;$APSPageCurrent = $task
-			;Call ("Page" & $task)
-	EndSelect
-	_ReduceMemory(0)
-EndFunc
-#comments-end
-
 Func TTWinMainSysEvent()
 	Switch @GUI_CTRLID
 		Case $GUI_EVENT_CLOSE
@@ -209,8 +188,6 @@ Func TTWinMainSysEvent()
 EndFunc
 
 Func TTWinMainButtonEvent()
-	Local $hCtrl = @GUI_CtrlId
-	_ExtMsgBox($sResources, 0, $sSysTitle, $hCtrl, 10, $hTTWinMain, 0, -10)
 	Switch @GUI_CtrlId
 		Case $hTTBtn[1]
 			If _GUICtrlButton_GetText($hTTBtn[1]) = "Options..." Then
@@ -222,10 +199,19 @@ Func TTWinMainButtonEvent()
 			EndIf
 		Case $hTTBtn[3] ; custom
 			_ExtMsgBox($sResources, 0, $sSysTitle, "You pressed 'Custom' button", 10, $hTTWinMain, 0, -5)
+			;$sPreviousPage = $sCurrentPage
 		Case $hTTBtn[4] ; back
-			_ExtMsgBox($sResources, 0, $sSysTitle, "You pressed 'Back' button", 10, $hTTWinMain, 0, -5)
+			Local $sBackPage = IniRead(@ScriptDir & '\plugins\' & $sCurrentPlugin & '\' & $sCurrentPage & '.ini', "buttonrow", "backpage", "0")
+			If $sBackPage = "0" Then
+				_ExtMsgBox($sResources, 0, "Internal Error", 'Error in plugins\' & $sCurrentPlugin & '\' & $sCurrentPage & '.ini' & @CRLF & _
+					'At section [buttonrow]' & @CRLF & _
+					'Key not found: "backpage"', _
+					0, $hTTWinMain, 0, -7)
+			Else
+				$sPreviousPage = $sCurrentPage
+				DrawPage($sCurrentPlugin, $sBackPage)
+			EndIf
 		Case $hTTBtn[5] ; next
-			;_ExtMsgBox($sResources, 0, $sSysTitle, "You pressed 'Next' button", 10, $hTTWinMain, 0, -5)
 			Local $sNextPage = IniRead(@ScriptDir & '\plugins\' & $sCurrentPlugin & '\' & $sCurrentPage & '.ini', "buttonrow", "nextpage", "0")
 			If $sNextPage = "0" Then
 				_ExtMsgBox($sResources, 0, "Internal Error", 'Error in plugins\' & $sCurrentPlugin & '\' & $sCurrentPage & '.ini' & @CRLF & _

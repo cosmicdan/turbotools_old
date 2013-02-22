@@ -1,23 +1,34 @@
-Func DoPageStaticWelcome($sPage, $sPluginPath, $sPluginFilename)
+Func DoPageStaticWelcome($sPage, $sPluginPath, $sPluginFilename, $iData)
 	; draw the banner
 	Local $sBanner = IniRead($sPage, "static", "banner", "0")
-	$aPageCtrl[0] = GUICtrlCreatePic("", 0, 0, 180, 458)
-	If FileExists(@ScriptDir & '\' & $sPluginPath & '\' & $sBanner) Then
-		;[TODO] Custom banner graphic
+	If GUICtrlGetState($aPageCtrl[$iData][1]) > 0 Then
+		GUICtrlSetState($aPageCtrl[$iData][1], $GUI_SHOW)
 	Else
-		_ResourceSetImageToCtrl($aPageCtrl[0], "INTROBANNER", $RT_RCDATA, $sResources)
+		$aPageCtrl[$iData][1] = GUICtrlCreatePic("", 0, 0, 180, 458)
+		If FileExists(@ScriptDir & '\' & $sPluginPath & '\' & $sBanner) Then
+			;[TODO] Custom banner graphic
+		Else
+			_ResourceSetImageToCtrl($aPageCtrl[$iData][1], "INTROBANNER", $RT_RCDATA, $sResources)
+		EndIf
+		GUICtrlSetResizing($aPageCtrl[$iData][1], $GUI_DOCKHEIGHT + $GUI_DOCKWIDTH)
 	EndIf
-	GUICtrlSetResizing($aPageCtrl[0], $GUI_DOCKHEIGHT + $GUI_DOCKWIDTH)
 	; draw the banner "filler".
 	Local $sBannerFill = IniRead($sPage, "static", "bannerfill", "0x5a7094")
-		$aPageCtrl[1] = GUICtrlCreateLabel("", 0, 456, 180, $aTTWinMainCurrentSize[1]-499)
+	If GUICtrlGetState($aPageCtrl[$iData][2]) > 0 Then
+		GUICtrlSetState($aPageCtrl[$iData][2], $GUI_SHOW)
+	Else
+		$aPageCtrl[$iData][2] = GUICtrlCreateLabel("", 0, 456, 180, $aTTWinMainCurrentSize[1]-498)
 		GUICtrlSetBkColor(-1, $sBannerFill)
 		GUICtrlSetResizing(-1, $GUI_DOCKTOP + $GUI_DOCKBOTTOM + $GUI_DOCKWIDTH)
+	EndIf
 	; insert the HTML content
-	Local $oIE = _IECreateEmbedded()
-	$aPageCtrl[2] = GUICtrlCreateObj($oIE, 190, 10, $aTTWinMainCurrentSize[0]-200,$aTTWinMainCurrentSize[1]-60)
+	If GUICtrlGetState($aPageCtrl[$iData][3]) > 0 Then
+		GUICtrlSetState($aPageCtrl[$iData][3], $GUI_SHOW)
+	Else
+		$aPageCtrl[$iData][3] = GUICtrlCreateObj($oIE, 190, 10, $aTTWinMainCurrentSize[0]-200,$aTTWinMainCurrentSize[1]-60)
 		GUICtrlSetResizing(-1, $GUI_DOCKLEFT + $GUI_DOCKRIGHT + $GUI_DOCKTOP + $GUI_DOCKBOTTOM)
 		_IENavigate($oIE, "about:blank")
+	EndIf
 		Local $sHTML = IniRead($sPage, "static", "content", $sPluginFilename & '.html')
 		If FileExists(@ScriptDir & '\' & $sPluginPath & '\' & $sHTML) Then
 			_IEDocWriteHTML($oIE, FileRead(@ScriptDir & '\' & $sPluginPath & '\' & $sHTML))
@@ -33,7 +44,6 @@ Func DoPageStaticWelcome($sPage, $sPluginPath, $sPluginFilename)
 		If $sScroll = "0" Then
 			$oIE.document.body.scroll = "no"
 		EndIf
-
 EndFunc
 
 
