@@ -42,8 +42,12 @@ Opt("MustDeclareVars", 1)
 #include "~udf\ArrayAdd2D.au3"
 #include "~udf\ExtMsgBox.au3"
 #include "~udf\GUICtrlSetOnHover.au3"
-#include "~udf\Resources.au3"
+#include "~udf\Icons.au3"
+#include "~udf\MD5.au3"
+#include "~udf\pZip.au3"
 #include "~udf\ReduceMem.au3"
+#include "~udf\Resources.au3"
+
 
 Global $sResources = @ScriptDir & '\resources.dll'
 Global $sSysTitle = "Turbo Tools"
@@ -64,6 +68,8 @@ Global $oIE = _IECreateEmbedded() ; persistent embedded IE object saves active x
 ; Data globals
 Global $iPageIndex ; needed since we can't pass parameters to control-event functions
 Global $sPage ; as above
+; globals for "toolwindow" dialogs (about, debug, etc)
+Global $hToolWindow, $hToolWindowHyperlink1, $hToolWindowCloseBtn
 
 _ExtMsgBoxSet(1, 0, -1, -1, -1, -1)
 
@@ -95,24 +101,30 @@ Global $hTTWinMain = GUICreate($sSysTitle, 700, 500, -1, -1, BitOR($WS_OVERLAPPE
 		GUIRegisterMsg(0x24, "MY_WM_GETMINMAXINFO")
 
 echo ("[#] Loading core includes...")
-#include "~inc\about.au3"
 #include "~inc\buttonrow.au3"
 #include "~inc\datahelper.au3"
-echo ("[#] Loading page templates...")
+echo ("[#] Loading static page templates...")
 #include "~inc\page_static.au3"
 #include "~inc\page_static_error.au3"
 #include "~inc\page_static_welcome.au3"
 #include "~inc\page_static_selector2x2.au3"
+echo ("[#] Loading task page templates...")
+#include "~inc\page_task.au3"
+#include "~inc\page_task_selectrom.au3"
+echo ("[#] Loading Tool Windows...")
+#include "~inc\toolwindow_about.au3"
 echo ("[i] Running.")
 
 GUISetState(@SW_SHOW)
 DoButtonBar()
 HideButtons()
 ;DrawPage("core", "page_welcome")
-DrawPage("core", "page_maintask")
+; above is default
+;DrawPage("core", "page_maintask")
+DrawPage("core", "page_task_rom_intro")
 
 While 1
-	Sleep(30000) ; thirty seconds
+	Sleep(11000) ; eleven seconds
 	RuntimeProc()
 WEnd
 
@@ -128,6 +140,7 @@ echo ("Bad Exit! Loop was broken! Probable interpreter crash...!")
 #Region ;~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~Global Event Handlers
 
 Func DrawPage($plugin, $inifile)
+	echo ("[i] Loading page '" & $inifile & "' from " & $plugin & " plugin")
 	; update globals
 	$sCurrentPlugin = $plugin
 	$sCurrentPage = $inifile
@@ -180,7 +193,7 @@ Func DrawPage($plugin, $inifile)
 			Case $pagetype = "static"
 				DoPageStatic('plugins\' & $plugin, $inifile)
 			Case $pagetype = "task"
-				;not implemented
+				DoPageTask('plugins\' & $plugin, $inifile)
 			Case Else
 				_ExtMsgBox($sResources, 0, "Internal Error", 'Error in plugins\' & $plugin & '\' & $inifile & '.ini' & @CRLF & _
 							'At section [common]; key "type"' & @CRLF & _
@@ -235,18 +248,23 @@ Func TTWinMainButtonEvent()
 			EndIf
 		Case $hTTBtn[6]
 			;If _GUICtrlButton_GetText($hTTBtn[6]) = "Cancel" Then
-				; do cancel stuff instead of quit
+				; [TODO] do cancel stuff instead of quit
 			;Else
 				TTQuit()
 			;EndIf
 	EndSwitch
 EndFunc
 
-
-Func BackGoesHome() ; jump-home function (from distant/irregular page numbers)
-	echo("[i] Jump-home")
-	GUICtrlSetOnEvent($hTTBtn[3], "TTWinMainButtonEvent") ; Reset to standard behavior
-	;DrawPage(-2)
+Func ToolWindowEvent()
+	Switch @GUI_CtrlId
+		Case $hToolWindowCloseBtn
+			GUIDelete ($hToolWindow)
+			GUISetState(@SW_ENABLE, $hTTWinMain)
+			WinActivate($sSysTitle)
+			GUISwitch($hTTWinMain)
+		Case $hToolWindowHyperlink1
+			ShellExecute("http://forum.xda-developers.com/member.php?u=1844875")
+	EndSwitch
 EndFunc
 
 Func TTQuit()
