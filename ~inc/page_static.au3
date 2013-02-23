@@ -12,15 +12,22 @@ Func DoPageStatic($sPage, $sPluginPath, $sPluginFilename, $iIndexOfPageData)
 					'Key not found: "type"', _
 					0, $hTTWinMain, 0, -4)
 		Else
-			Select
-				Case $sPageType = "welcome"
-					DoPageStaticWelcome($sPage, $sPluginPath, $sPluginFilename, $iIndexOfPageData)
-				Case Else
-					_ExtMsgBox($sResources, 0, "Internal Error", 'Error in ' & $sPluginPath & '\' & $sPluginFilename & '.ini' & @CRLF & _
+			Call ("page_static_" & $sPageType, $sPage, $sPluginPath, $sPluginFilename, $iIndexOfPageData)
+			If @error = 0xDEAD And @extended = 0xBEEF Then
+				_ExtMsgBox($sResources, 0, "Internal Error", 'Error in ' & $sPluginPath & '\' & $sPluginFilename & '.ini' & @CRLF & _
 							'At section [static]; key "type"' & @CRLF & _
-							'Unknown value: "' & $sPageType & '"', _
-							0, $hTTWinMain, 0, -4)
-			EndSelect
+							'Unknown page type: "page_static_' & $sPageType & '"', _
+							0, $hTTWinMain, 0, -7)
+			EndIf
+			;Select
+			;	Case $sPageType = "welcome"
+			;		DoPageStaticWelcome($sPage, $sPluginPath, $sPluginFilename, $iIndexOfPageData)
+			;	Case Else
+			;		_ExtMsgBox($sResources, 0, "Internal Error", 'Error in ' & $sPluginPath & '\' & $sPluginFilename & '.ini' & @CRLF & _
+			;				'At section [static]; key "type"' & @CRLF & _
+			;				'Unknown value: "' & $sPageType & '"', _
+			;				0, $hTTWinMain, 0, -4)
+			;EndSelect
 		EndIf
 	EndIf
 EndFunc

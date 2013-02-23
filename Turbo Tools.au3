@@ -84,7 +84,7 @@ echo ("[#] Loading main GUI...")
 Opt("GUIResizeMode", $GUI_DOCKAUTO)
 Global $hTTWinMain = GUICreate($sSysTitle, 700, 500, -1, -1, BitOR($WS_OVERLAPPEDWINDOW, $WS_SIZEBOX))
 	setIcon(1)
-	GUISetFont(9, 400, Default, "Arial", -1, 5)
+	GUISetFont(9, 400, Default, "Trebuchet MS", -1, 5)
 	GUISetBkColor (0xeeecde)
 	Opt("GUIResizeMode", $GUI_DOCKLEFT + $GUI_DOCKRIGHT + $GUI_DOCKTOP + $GUI_DOCKHEIGHT)
 	GUISetOnEvent($GUI_EVENT_CLOSE, "TTWinMainSysEvent")
@@ -98,12 +98,14 @@ echo ("[#] Loading core includes...")
 echo ("[#] Loading page templates...")
 #include "~inc\page_static.au3"
 #include "~inc\page_static_welcome.au3"
+#include "~inc\page_static_selector2x2.au3"
 echo ("[i] Running.")
 
 GUISetState(@SW_SHOW)
 DoButtonBar()
 HideButtons()
-DrawPage("core", "page_welcome")
+;DrawPage("core", "page_welcome")
+DrawPage("core", "page_maintask")
 
 While 1
 	Sleep(30000) ; thirty seconds
@@ -127,15 +129,15 @@ Func DrawPage($plugin, $inifile)
 	$sCurrentPage = $inifile
 	; Get current window dimensions before drawing new page
 	$aTTWinMainCurrentSize = WinGetClientSize ($hTTWinMain)
-	; gather page data
-	Local $iIndexOfPageData = findpage($plugin & '|' & $inifile)
 	If Not $sPreviousPage = "" Then
 		; we've moved a page, hide all previous controls
-		Local $sPageCtrlCount = UBound($aPageCtrl, $iIndexOfPageData)
-		For $i = 0 to $sPageCtrlCount - 1 ; hide all controls on page
+		Local $iIndexOfPageData = findpage($sPreviousPage)
+		For $i = 0 to 98 ; hide all controls on page
 			GUICtrlSetState($aPageCtrl[$iIndexOfPageData][$i], $GUI_HIDE)
 		Next
 	EndIf
+	; gather page data
+	Local $iIndexOfPageData = findpage($plugin & '|' & $inifile)
 	; Start processing page INI
 	Local $sPage = @ScriptDir & '\plugins\' & $plugin & '\' & $inifile & '.ini'
 	If FileExists($sPage) = "0" Then
@@ -208,7 +210,7 @@ Func TTWinMainButtonEvent()
 					'Key not found: "backpage"', _
 					0, $hTTWinMain, 0, -7)
 			Else
-				$sPreviousPage = $sCurrentPage
+				$sPreviousPage = $sCurrentPlugin & "|" & $sCurrentPage
 				DrawPage($sCurrentPlugin, $sBackPage)
 			EndIf
 		Case $hTTBtn[5] ; next
@@ -219,7 +221,7 @@ Func TTWinMainButtonEvent()
 					'Key not found: "nextpage"', _
 					0, $hTTWinMain, 0, -7)
 			Else
-				$sPreviousPage = $sCurrentPage
+				$sPreviousPage = $sCurrentPlugin & "|" & $sCurrentPage
 				DrawPage($sCurrentPlugin, $sNextPage)
 			EndIf
 		Case $hTTBtn[6]
@@ -289,7 +291,8 @@ Func ButtonIcon32($button, $index)
 	Local $icon = _GUIImageList_Create(32, 32, 5, 3)
 		_GUIImageList_AddIcon($icon, $sResources, $index, true)
 	;_GUICtrlButton_SetImageList($button, $icon, 0, 84, 0, -116, 20)
-	_GUICtrlButton_SetImageList($button, $icon, 0, 81, 0, -113, 20)
+	;_GUICtrlButton_SetImageList($button, $icon, 0, 81, 0, -113, 20)
+	_GUICtrlButton_SetImageList($button, $icon, 4, 1, -10, 1)
 EndFunc
 
 #EndRegion ;~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

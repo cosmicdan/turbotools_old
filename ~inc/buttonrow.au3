@@ -86,7 +86,7 @@ EndFunc
 
 Func HideButtons()
 	Local $NumberOfControls = UBound($hTTBtn) - 1
-	For $i = 0 to $NumberOfControls
+	For $i = 1 to $NumberOfControls ;start at 1 since 0 is the divider
 		GUICtrlSetState($hTTBtn[$i], $GUI_HIDE)
 	Next
 EndFunc
