@@ -2,7 +2,6 @@ Global $hTTBtn[7] ; Maximum of six bottom-bar buttons (1 is the divider)
 
 Func DoButtonBar()
 	$hTTBtn[0] = GUICtrlCreateLabel("", 20, 457, 660, 1, $SS_SUNKEN) ; Divider above buttons
-		;GUICtrlSetBkColor(-1, 0x777777)
 		GUICtrlSetResizing(-1, $GUI_DOCKSTATEBAR)
 	$hTTBtn[1] = GUICtrlCreateButton("Options...", 8, 464, 92, 30) ; First button (bottom-left corner)
 		GUICtrlSetOnEvent(-1, "TTWinMainButtonEvent")
@@ -51,8 +50,13 @@ Func DoButtonRow($key, $value, $sPluginIni)
 				GUICtrlSetState($hTTBtn[4], $GUI_SHOW)
 			EndIf
 		Case ($key = "next")
+			GUICtrlSetData($hTTBtn[5], "Next")
 			If $value = "1" Then
 				GUICtrlSetState($hTTBtn[5], $GUI_SHOW)
+				GUICtrlSetState($hTTBtn[5], $GUI_ENABLE)
+			ElseIf $value = "disabled" Then
+				GUICtrlSetState($hTTBtn[5], $GUI_SHOW)
+				GUICtrlSetState($hTTBtn[5], $GUI_DISABLE)
 			EndIf
 		; Set button configurations/flags
 		Case ($key = "customtask")
@@ -64,18 +68,18 @@ Func DoButtonRow($key, $value, $sPluginIni)
 				EndIf
 			EndIf
 		Case ($key = "backpage")
-			;If Not $value = "0" Then
-			;	echo ("[!] Key 'backpage' is specified but not yet implemented");
-			;EndIf
+			If Not $value = "0" Then
+				echo ("    [i] 'Back' is mapped to " & $value);
+			EndIf
 		Case ($key = "nextpage")
-			;If Not $value = "0" Then
-			;	echo ("[!] Key 'nextpage' is specified but not yet implemented");
-			;EndIf
+			If Not $value = "0" Then
+				echo ("    [i] 'Next' is mapped to " & $value);
+			EndIf
 		Case $key = "nexttext"
 			GUICtrlSetData($hTTBtn[5], $value)
 		Case $key = "quit"
 			If $value = "cancel" Then
-				echo ("[!] Key/value 'quit=cancel' is specified but not yet implemented");
+				echo ("    [!] Key/value 'quit=cancel' is specified but not yet implemented");
 			EndIf
 		Case Else
 			_ExtMsgBox($sResources, 0, "Warning", 'Warning in ' & $sPluginIni & @CRLF & _

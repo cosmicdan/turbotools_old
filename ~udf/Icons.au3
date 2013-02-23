@@ -65,7 +65,7 @@
         Global Const $sGreen = @TempDir & '\~green.png'
         Global Const $sRed = @TempDir & '\~red.png'
         Global Const $sLogo = @TempDir & '\~logo.png'
-        
+
         Example1()
         Example2()
         Example3()
@@ -73,9 +73,9 @@
         Example5()
         Example6()
         Example7()
-        
+
         Func Example1()
-            
+
             GUICreate('Example1', 204, 108)
             $Icon1 = GUICtrlCreateIcon('', 0, 30, 38, 32, 32)
             $Icon2 = GUICtrlCreateIcon('', 0, 88, 38, 32, 32)
@@ -88,13 +88,13 @@
 
             Do
             Until GUIGetMsg() = $GUI_EVENT_CLOSE
-            
+
             GUIDelete()
-            
+
         EndFunc   ;==>Example1
-        
+
         Func Example2()
-            
+
             GUICreate('Example2', 216, 128)
             $Icon = GUICtrlCreateIcon('', 0, 40, 40, 48, 48)
             GUICtrlCreateIcon(@WindowsDir & '\explorer.exe', 0, 128, 40, 48, 48)
@@ -104,13 +104,13 @@
 
             Do
             Until GUIGetMsg() = $GUI_EVENT_CLOSE
-            
+
             GUIDelete()
-            
+
         EndFunc   ;==>Example2
-        
+
         Func Example3()
-            
+
             GUICreate('Example3', 715, 388)
             $Pic1 = GUICtrlCreatePic('', 10, 10, 386, 368)
             $Pic2 = GUICtrlCreatePic('', 406, 10, 193, 184)
@@ -123,13 +123,13 @@
 
             Do
             Until GUIGetMsg() = $GUI_EVENT_CLOSE
-        
+
             GUIDelete()
-            
+
         EndFunc   ;==>Example3
 
         Func Example4()
-            
+
             GUICreate('Example4', 253, 244)
             $Pic1 = GUICtrlCreatePic('', 10, 10, 193, 184)
             $Pic2 = GUICtrlCreatePic('', 60, 60, 193, 184)
@@ -589,7 +589,7 @@ Func _Icons_Bitmap_Crop($hBitmap, $iX, $iY, $iWidth, $iHeight)
 		Return 0
 	EndIf
 
-	Local $hDC, $hDestDC, $SrcDC, $hBmp
+	Local $hDC, $hDestDC, $SrcDC, $hBmp, $hSrcDC
 
 	$hDC = _WinAPI_GetDC(0)
 	$hDestDC = _WinAPI_CreateCompatibleDC($hDC)
@@ -697,19 +697,19 @@ EndFunc   ;==>_Icons_Bitmap_GetSize
 
 Func _Icons_Bitmap_IsAlpha($hBitmap)
 
-	Local $Ret, $tBits
+	Local $Ret, $tBits, $Length
 
 	$Ret = DllCall('gdi32.dll', 'int', 'GetBitmapBits', 'ptr', $hBitmap, 'long', 0, 'ptr', 0)
 	If (@error) Or ($Ret[0] = 0) Then
 		Return SetError(1, 0, 0)
 	EndIf
-	$Lenght = $Ret[0] / 4
-	$tBits = DllStructCreate('dword[' & $Lenght & ']')
+	$Length = $Ret[0] / 4
+	$tBits = DllStructCreate('dword[' & $Length & ']')
 	$Ret = DllCall('gdi32.dll', 'int', 'GetBitmapBits', 'ptr', $hBitmap, 'long', $Ret[0], 'ptr', DllStructGetPtr($tBits))
 	If (@error) Or ($Ret[0] = 0) Then
 		Return SetError(1, 0, 0)
 	EndIf
-	For $i = 1 To $Lenght
+	For $i = 1 To $Length
 		If BitAND(DllStructGetData($tBits, 1, $i), 0xFF000000) Then
 			Return 1
 		EndIf
@@ -748,7 +748,7 @@ Func _Icons_Bitmap_Resize($hBitmap, $iWidth, $iHeight, $fHalftone = 0)
 		Return 0
 	EndIf
 
-	Local $Ret, $hDC, $hDestDC, $SrcDC, $hBmp
+	Local $Ret, $hDC, $hDestDC, $SrcDC, $hBmp, $hSrcDC
 
 	$hDC = _WinAPI_GetDC(0)
 	$hDestDC = _WinAPI_CreateCompatibleDC($hDC)
@@ -1107,7 +1107,7 @@ Func _Icons_Icon_CreateFromBitmap($hBitmap)
 	DllStructSetData($tICONINFO, 4, $hMask)
 	DllStructSetData($tICONINFO, 5, $hBitmap)
 
-	$Ret = DllCall('user32.dll', 'ptr', 'CreateIconIndirect', 'ptr', DllStructGetPtr($tICONINFO))
+	Local $Ret = DllCall('user32.dll', 'ptr', 'CreateIconIndirect', 'ptr', DllStructGetPtr($tICONINFO))
 	If (Not @error) And ($Ret[0]) Then
 		$hIcon = $Ret[0]
 	EndIf
