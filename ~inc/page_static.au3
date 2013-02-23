@@ -1,4 +1,4 @@
-Func DoPageStatic($sPage, $sPluginPath, $sPluginFilename, $iIndexOfPageData)
+Func DoPageStatic($sPluginPath, $sPluginFilename)
 	Local $aPageStatic = IniReadSection($sPage, "static")
 	If @error Then
 		_ExtMsgBox($sResources, 0, "Internal Error", 'Error in ' & $sPluginPath & '\' & $sPluginFilename & '.ini' & @CRLF & _
@@ -12,7 +12,7 @@ Func DoPageStatic($sPage, $sPluginPath, $sPluginFilename, $iIndexOfPageData)
 					'Key not found: "type"', _
 					0, $hTTWinMain, 0, -4)
 		Else
-			Call ("page_static_" & $sPageType, $sPage, $sPluginPath, $sPluginFilename, $iIndexOfPageData)
+			Call ("page_static_" & $sPageType, $sPluginPath, $sPluginFilename)
 			If @error = 0xDEAD And @extended = 0xBEEF Then
 				_ExtMsgBox($sResources, 0, "Internal Error", 'Error in ' & $sPluginPath & '\' & $sPluginFilename & '.ini' & @CRLF & _
 							'At section [static]; key "type"' & @CRLF & _

@@ -43,7 +43,6 @@ Func DoButtonRow($key, $value, $sPluginIni)
 		Case ($key = "custom")
 			$bButtonRow_CustomTask = False
 			If $value = "1" Then
-				echo("Showing advanced button...")
 				GUICtrlSetState($hTTBtn[3], $GUI_SHOW)
 				$bButtonRow_CustomTask = True
 			EndIf
@@ -58,16 +57,20 @@ Func DoButtonRow($key, $value, $sPluginIni)
 		; Set button configurations/flags
 		Case ($key = "customtask")
 		    If $bButtonRow_CustomTask = True Then
-				echo ("[!] Key 'customtask' is enabled but not yet implemented");
+				If $value = "debugpane" Then
+					GUICtrlSetData($hTTBtn[3], "Debug...")
+					GUICtrlSetData($hTTBtn[6], "Bail Out")
+					$bCfgQuickQuit = 1
+				EndIf
 			EndIf
 		Case ($key = "backpage")
-			If Not $value = "0" Then
-				echo ("[!] Key 'backpage' is specified but not yet implemented");
-			EndIf
+			;If Not $value = "0" Then
+			;	echo ("[!] Key 'backpage' is specified but not yet implemented");
+			;EndIf
 		Case ($key = "nextpage")
-			If Not $value = "0" Then
-				echo ("[!] Key 'nextpage' is specified but not yet implemented");
-			EndIf
+			;If Not $value = "0" Then
+			;	echo ("[!] Key 'nextpage' is specified but not yet implemented");
+			;EndIf
 		Case $key = "nexttext"
 			GUICtrlSetData($hTTBtn[5], $value)
 		Case $key = "quit"

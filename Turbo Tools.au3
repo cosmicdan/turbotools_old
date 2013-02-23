@@ -61,6 +61,9 @@ Global $sCurrentPlugin
 Global $sCurrentPage
 Global $sPreviousPage ; used internally for pagination
 Global $oIE = _IECreateEmbedded() ; persistent embedded IE object saves active x object (re/un)loading
+; Data globals
+Global $iPageIndex ; needed since we can't pass parameters to control-event functions
+Global $sPage ; as above
 
 _ExtMsgBoxSet(1, 0, -1, -1, -1, -1)
 
@@ -97,6 +100,7 @@ echo ("[#] Loading core includes...")
 #include "~inc\datahelper.au3"
 echo ("[#] Loading page templates...")
 #include "~inc\page_static.au3"
+#include "~inc\page_static_error.au3"
 #include "~inc\page_static_welcome.au3"
 #include "~inc\page_static_selector2x2.au3"
 echo ("[i] Running.")
@@ -131,23 +135,27 @@ Func DrawPage($plugin, $inifile)
 	$aTTWinMainCurrentSize = WinGetClientSize ($hTTWinMain)
 	If Not $sPreviousPage = "" Then
 		; we've moved a page, hide all previous controls
-		Local $iIndexOfPageData = findpage($sPreviousPage)
+		$iPageIndex = findpage($sPreviousPage)
 		For $i = 0 to 98 ; hide all controls on page
-			GUICtrlSetState($aPageCtrl[$iIndexOfPageData][$i], $GUI_HIDE)
+			GUICtrlSetState($aPageCtrl[$iPageIndex][$i], $GUI_HIDE)
 		Next
 	EndIf
 	; gather page data
-	Local $iIndexOfPageData = findpage($plugin & '|' & $inifile)
-	; Start processing page INI
-	Local $sPage = @ScriptDir & '\plugins\' & $plugin & '\' & $inifile & '.ini'
+	$iPageIndex = findpage($plugin & '|' & $inifile)
+	; error checks
+	; [TODO] Verify requested plugin folder exists
+	$sPage = @ScriptDir & '\plugins\' & $plugin & '\' & $inifile & '.ini'
 	If FileExists($sPage) = "0" Then
 		_ExtMsgBox($sResources, 0, "Internal Error", 'Page not found:' & @CRLF & _
 										'plugins\' & $plugin & '\' & $inifile & '.ini', _
 										0, $hTTWinMain, 0, -7)
-		; [TODO] Show error page, enable back button (use $sPreviousPage)
-		Return 0
+		$sPage = @ScriptDir & '\plugins\core\page_error.ini'
+		$plugin = 'core'
+		$inifile = 'page_error'
 	EndIf
+	; Hide buttons before redrawing them
 	HideButtons()
+	; Start processing page INI
 	Local $buttonrow = IniRead($sPage, "common", "buttonrow", "0")
 	If $buttonrow = "1" Then
 		Local $aTTBtn = IniReadSection($sPage, "buttonrow")
@@ -170,7 +178,7 @@ Func DrawPage($plugin, $inifile)
 	Else
 		Select
 			Case $pagetype = "static"
-				DoPageStatic($sPage, 'plugins\' & $plugin, $inifile, $iIndexOfPageData)
+				DoPageStatic('plugins\' & $plugin, $inifile)
 			Case $pagetype = "task"
 				;not implemented
 			Case Else
@@ -200,7 +208,8 @@ Func TTWinMainButtonEvent()
 				DialogAbout()
 			EndIf
 		Case $hTTBtn[3] ; custom
-			_ExtMsgBox($sResources, 0, $sSysTitle, "You pressed 'Custom' button", 10, $hTTWinMain, 0, -5)
+			Local $sCustomTask = IniRead(@ScriptDir & '\plugins\' & $sCurrentPlugin & '\' & $sCurrentPage & '.ini', "buttonrow", "customtask", "debugpane")
+			_ExtMsgBox($sResources, 0, $sSysTitle, "[TODO] - Show options for debugging Turbo Tools", 10, $hTTWinMain, 0, -5)
 			;$sPreviousPage = $sCurrentPage
 		Case $hTTBtn[4] ; back
 			Local $sBackPage = IniRead(@ScriptDir & '\plugins\' & $sCurrentPlugin & '\' & $sCurrentPage & '.ini', "buttonrow", "backpage", "0")
@@ -225,9 +234,11 @@ Func TTWinMainButtonEvent()
 				DrawPage($sCurrentPlugin, $sNextPage)
 			EndIf
 		Case $hTTBtn[6]
-			If _GUICtrlButton_GetText($hTTBtn[6]) = "Quit" Then
+			;If _GUICtrlButton_GetText($hTTBtn[6]) = "Cancel" Then
+				; do cancel stuff instead of quit
+			;Else
 				TTQuit()
-			EndIf
+			;EndIf
 	EndSwitch
 EndFunc
 
