@@ -319,8 +319,6 @@ EndFunc
 Func ButtonIcon32($button, $index)
 	Local $icon = _GUIImageList_Create(32, 32, 5, 3)
 		_GUIImageList_AddIcon($icon, $sResources, $index, true)
-	;_GUICtrlButton_SetImageList($button, $icon, 0, 84, 0, -116, 20)
-	;_GUICtrlButton_SetImageList($button, $icon, 0, 81, 0, -113, 20)
 	_GUICtrlButton_SetImageList($button, $icon, 4, 1, -10, 1)
 EndFunc
 
