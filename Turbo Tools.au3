@@ -118,10 +118,10 @@ echo ("[i] Running.")
 GUISetState(@SW_SHOW)
 DoButtonBar()
 HideButtons()
-;DrawPage("core", "page_welcome")
-; above is default
+DrawPage("core", "page_welcome")
+; above is default, other DrawPage commands below are for debugging or [future] loading some associated file e.g. preset or batch task
 ;DrawPage("core", "page_maintask")
-DrawPage("core", "page_task_rom_intro")
+;DrawPage("core", "page_task_rom_intro")
 
 While 1
 	Sleep(11000) ; eleven seconds
@@ -148,13 +148,13 @@ Func DrawPage($plugin, $inifile)
 	$aTTWinMainCurrentSize = WinGetClientSize ($hTTWinMain)
 	If Not $sPreviousPage = "" Then
 		; we've moved a page, hide all previous controls
-		$iPageIndex = findpage($sPreviousPage)
+		$iPageIndex = findpage($sPreviousPage, 0)
 		For $i = 0 to 98 ; hide all controls on page
 			GUICtrlSetState($aPageCtrl[$iPageIndex][$i], $GUI_HIDE)
 		Next
 	EndIf
 	; gather page data
-	$iPageIndex = findpage($plugin & '|' & $inifile)
+	$iPageIndex = findpage($plugin & '|' & $inifile, 1)
 	; error checks
 	; [TODO] Verify requested plugin folder exists
 	$sPage = @ScriptDir & '\plugins\' & $plugin & '\' & $inifile & '.ini'
@@ -260,8 +260,11 @@ Func ToolWindowEvent()
 		Case $hToolWindowCloseBtn
 			GUIDelete ($hToolWindow)
 			GUISetState(@SW_ENABLE, $hTTWinMain)
-			WinActivate($sSysTitle)
 			GUISwitch($hTTWinMain)
+			; Active the main window a few times to work-around a strange AutoIt idiosynchrasy
+			WinActivate($sSysTitle)
+			WinActivate($sSysTitle)
+			WinActivate($sSysTitle)
 		Case $hToolWindowHyperlink1
 			ShellExecute("http://forum.xda-developers.com/member.php?u=1844875")
 	EndSwitch

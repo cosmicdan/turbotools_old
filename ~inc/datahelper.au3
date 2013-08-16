@@ -1,5 +1,5 @@
 ; Returns the array index of the request plugin|page data, or a new index if new page
-Func findpage($pluginandpage)
+Func findpage($pluginandpage, $isdraw)
 	Local $iIndex = _ArraySearch($aPluginPage, $pluginandpage, 0, 0, 0, 1)
 	If @error Then
 		;Not found, page is fresh
@@ -12,8 +12,11 @@ Func findpage($pluginandpage)
 	Else
 		;page data exists
 		Local $iPageCtrlIndex = StringReplace($aPluginPage[$iIndex], $pluginandpage & '|', "")
-		; Return the index of $aPageCtrl where this page's data is held
-		;echo ('    [#] Page ' & $pluginandpage & ' has existing data, re-use it (index ' & $iPageCtrlIndex & ')')
-		Return $iPageCtrlIndex
+        If $isdraw = 1 Then
+            ; Only echo debugging info on the draw i.e. not on the "recycle" stage of unloading a page
+            echo ('    [#] Page ' & $pluginandpage & ' has existing data, re-use it (index ' & $iPageCtrlIndex & ')')
+        EndIf
+        ; Return the index of $aPageCtrl where this page's data is held
+        Return $iPageCtrlIndex
 	EndIf
 EndFunc
