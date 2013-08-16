@@ -163,6 +163,7 @@ Func DrawPage($plugin, $inifile)
         _ExtMsgBox($sResources, 0, "Internal Error", 'Page not found:' & @CRLF & _
                                         'plugins\' & $plugin & '\' & $inifile & '.ini', _
                                         0, $hTTWinMain, 0, -7)
+        ; [TODO] User option to either cancel pagination, or do the hard-fault as it does now. Default would be to cancel and return to previous page, since the hard fault is useful only to those making plugins
         $sPage = @ScriptDir & '\plugins\core\page_error.ini'
         $plugin = 'core'
         $inifile = 'page_error'
