@@ -3,6 +3,7 @@
 #AutoIt3Wrapper_Icon=~resources\ICON_000_MAIN.ico
 #AutoIt3Wrapper_Outfile=Turbo Tools.exe
 #AutoIt3Wrapper_Compression=0
+#AutoIt3Wrapper_UseUpx=n
 #AutoIt3Wrapper_Res_Comment=Turbo Tools
 #AutoIt3Wrapper_Res_Description=All-in-one tool for customizing Android
 #AutoIt3Wrapper_Res_Fileversion=0.1.0.0
