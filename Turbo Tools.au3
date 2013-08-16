@@ -51,8 +51,8 @@ Opt("MustDeclareVars", 1)
 
 Global $sResources = @ScriptDir & '\resources.dll'
 Global $sSysTitle = "Turbo Tools"
-Global $sSysVer = "0.1.0.0"
-Global $sSysRev = "Free and Open-Source"
+Global $sSysVer = FileGetVersion(@ScriptFullPath)
+Global $sSysRev = "Build " & FileGetVersion(@ScriptFullPath, "Timestamp")
 
 
 Global $aTTWinMainCurrentSize
