@@ -21,28 +21,28 @@ Global Const $pZip_dll = @ScriptDir & '\pZip.dll'
 ; Author.........: asdf8
 ; ================================================================================
 Func _zip_FileInfo($sFile)
-	Local $ret[1][7], $res, $tmp, $i, $j
-	If Not $sFile Or Not FileExists($sFile) Then Return SetError(1, 0, $ret)
-	$res = DllCall($pZip_dll, 'str', 'pZIP_FileInfo', 'str', $sFile)
-	If Not IsArray($res) Then Return SetError(2, 0, $ret)
-	If $res[0] Then
-		$res = StringRegExp($res[0], '([^|]+)', 3)
-		ReDim $ret[UBound($res) + 1][7]
-		$ret[0][0] = UBound($res)
-		$ret[0][1] = 'Compressed Size'
-		$ret[0][2] = 'Uncompressed Size'
-		$ret[0][3] = 'Date'
-		$ret[0][4] = 'Crc32'
-		$ret[0][5] = 'Compression Method'
-		$ret[0][6] = 'Flag Encrypted'
-		For $i = 1 To $ret[0][0]
-			$tmp = StringSplit($res[$i - 1], '*', 2)
-			For $j = 0 To 6
-				$ret[$i][$j] = $tmp[$j]
-			Next
-		Next
-	EndIf
-	Return SetError(0, 0, $ret)
+    Local $ret[1][7], $res, $tmp, $i, $j
+    If Not $sFile Or Not FileExists($sFile) Then Return SetError(1, 0, $ret)
+    $res = DllCall($pZip_dll, 'str', 'pZIP_FileInfo', 'str', $sFile)
+    If Not IsArray($res) Then Return SetError(2, 0, $ret)
+    If $res[0] Then
+        $res = StringRegExp($res[0], '([^|]+)', 3)
+        ReDim $ret[UBound($res) + 1][7]
+        $ret[0][0] = UBound($res)
+        $ret[0][1] = 'Compressed Size'
+        $ret[0][2] = 'Uncompressed Size'
+        $ret[0][3] = 'Date'
+        $ret[0][4] = 'Crc32'
+        $ret[0][5] = 'Compression Method'
+        $ret[0][6] = 'Flag Encrypted'
+        For $i = 1 To $ret[0][0]
+            $tmp = StringSplit($res[$i - 1], '*', 2)
+            For $j = 0 To 6
+                $ret[$i][$j] = $tmp[$j]
+            Next
+        Next
+    EndIf
+    Return SetError(0, 0, $ret)
 EndFunc
 
 
@@ -68,15 +68,15 @@ EndFunc
 ; Author.........: asdf8
 ; ================================================================================
 Func _zip_FindFile($sFile, $FindName, $IncludingPath = 1)
-	If Not $sFile Or Not FileExists($sFile) Or Not  $FindName Then Return SetError(1, 0, -1)
-	Local $res = DllCall($pZip_dll, 'str', 'pZIP_FindFile', 'str', $sFile, 'str', $FindName, 'int', $IncludingPath)
-	If Not IsArray($res) Then Return SetError(2, 0, -1)
-	If $res[0] Then
-		$res = StringSplit($res[0], '*', 2)
-		Return SetError(0, 0, $res)
-	Else
-		Return SetError(0, 0, -1)
-	EndIf
+    If Not $sFile Or Not FileExists($sFile) Or Not  $FindName Then Return SetError(1, 0, -1)
+    Local $res = DllCall($pZip_dll, 'str', 'pZIP_FindFile', 'str', $sFile, 'str', $FindName, 'int', $IncludingPath)
+    If Not IsArray($res) Then Return SetError(2, 0, -1)
+    If $res[0] Then
+        $res = StringSplit($res[0], '*', 2)
+        Return SetError(0, 0, $res)
+    Else
+        Return SetError(0, 0, -1)
+    EndIf
 EndFunc
 
 
@@ -111,19 +111,19 @@ EndFunc
 ; Author.........: asdf8
 ; ================================================================================
 Func _zip_AddFiles($sFile, $inpBaseDir, $FileMask = "", $PathMask = "", $StoreRelPath = 1, $Recursive = 1, $CompressMethod = 8, $Password = "")
-	If Not $sFile Or Not $inpBaseDir Or Not FileExists($inpBaseDir & "\")  Then Return SetError(1, 0, 0)
-	If $PathMask Then
-		If StringRight($PathMask, 1) = "\" Then $PathMask = StringTrimRight($PathMask, 1)
-		If StringLeft($PathMask, 1) = "\" Then $PathMask = StringTrimLeft($PathMask, 1)
-		If $PathMask Then $FileMask = $PathMask & "\" & $FileMask
-	EndIf
-	Local $res = DllCall($pZip_dll, 'int', 'pZIP_AddFiles', 'str', $sFile, 'str', $inpBaseDir, 'str', $FileMask, 'int', $StoreRelPath, 'int', $Recursive, 'int', $CompressMethod, 'str', $Password)
-	If Not IsArray($res) Then Return SetError(2, 0, -1)
-	If $res[0] < 0 Then
-		Return SetError(3, 0, 0)
-	Else
-		Return SetError(0, 0, $res[0])
-	EndIf
+    If Not $sFile Or Not $inpBaseDir Or Not FileExists($inpBaseDir & "\")  Then Return SetError(1, 0, 0)
+    If $PathMask Then
+        If StringRight($PathMask, 1) = "\" Then $PathMask = StringTrimRight($PathMask, 1)
+        If StringLeft($PathMask, 1) = "\" Then $PathMask = StringTrimLeft($PathMask, 1)
+        If $PathMask Then $FileMask = $PathMask & "\" & $FileMask
+    EndIf
+    Local $res = DllCall($pZip_dll, 'int', 'pZIP_AddFiles', 'str', $sFile, 'str', $inpBaseDir, 'str', $FileMask, 'int', $StoreRelPath, 'int', $Recursive, 'int', $CompressMethod, 'str', $Password)
+    If Not IsArray($res) Then Return SetError(2, 0, -1)
+    If $res[0] < 0 Then
+        Return SetError(3, 0, 0)
+    Else
+        Return SetError(0, 0, $res[0])
+    EndIf
 EndFunc
 
 
@@ -144,18 +144,18 @@ EndFunc
 ; Author.........: asdf8
 ; ================================================================================
 Func _zip_ExtractFiles($sFile, $OutputPath, $FileMask = "", $PathMask = "", $IncludingPath = 1, $Password = "")
-	If Not $sFile Or Not FileExists($sFile) Or Not  $OutputPath Then Return SetError(1, 0, 0)
-	If $PathMask Then
-		If StringRight($PathMask, 1) = "\" Then $PathMask = StringTrimRight($PathMask, 1)
-		If StringLeft($PathMask, 1) = "\" Then $PathMask = StringTrimLeft($PathMask, 1)
-		If $PathMask Then $FileMask = $PathMask & "\" & $FileMask
-	EndIf
-	Local $res = DllCall($pZip_dll, 'int', 'pZIP_ExtractFiles', 'str', $sFile, 'str', $OutputPath, 'str', $FileMask, 'int', $IncludingPath, 'str', $Password)
-	If Not IsArray($res) Then Return SetError(2, 0, 0)
-	If $res[0] < 0 Then
-		$res[0] = (-1) * ($res[0] + 1)
-		Return SetError(3, 0, $res[0])
-	Else
-		Return SetError(0, 0, $res[0])
-	EndIf
+    If Not $sFile Or Not FileExists($sFile) Or Not  $OutputPath Then Return SetError(1, 0, 0)
+    If $PathMask Then
+        If StringRight($PathMask, 1) = "\" Then $PathMask = StringTrimRight($PathMask, 1)
+        If StringLeft($PathMask, 1) = "\" Then $PathMask = StringTrimLeft($PathMask, 1)
+        If $PathMask Then $FileMask = $PathMask & "\" & $FileMask
+    EndIf
+    Local $res = DllCall($pZip_dll, 'int', 'pZIP_ExtractFiles', 'str', $sFile, 'str', $OutputPath, 'str', $FileMask, 'int', $IncludingPath, 'str', $Password)
+    If Not IsArray($res) Then Return SetError(2, 0, 0)
+    If $res[0] < 0 Then
+        $res[0] = (-1) * ($res[0] + 1)
+        Return SetError(3, 0, $res[0])
+    Else
+        Return SetError(0, 0, $res[0])
+    EndIf
 EndFunc

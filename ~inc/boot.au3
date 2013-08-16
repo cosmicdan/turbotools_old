@@ -1,45 +1,45 @@
 Func Boot()
-	Local $hSplashBar, $hSplashBarctrl
+    Local $hSplashBar, $hSplashBarctrl
     #Region ;~~~~~~~~~~START DrawInSplashScreen
-	If $bCfgSplash Then
-		Global $hSplashGUI = GUICreate("Splash", 373, 128, -1, -1, $WS_POPUP + $WS_DISABLED, $WS_EX_LAYERED + $WS_EX_TOPMOST + $WS_EX_TOOLWINDOW)
-			GUISetState()
-		For $i = 0 To 255 Step 8
-			drawPNG($i)
-		Next
-		Local $tmp = WinGetPos($hSplashGUI)
-		$hSplashBar = GUICreate("SplashBar", 338, 10, $tmp[0]+28, $tmp[1]+111, $WS_POPUP + $WS_DISABLED, $WS_EX_TOPMOST + $WS_EX_TOOLWINDOW)
-			GUISetBkColor (0x444444)
-			GUISetState()
-		$hSplashBarctrl = GUICtrlCreateProgress (1, 1, 336, 8, $PBS_SMOOTH)
-			GUICtrlSetData(-1, 13)
-		;GUICtrlSetData($hSplashBarctrl, 37)
-		#EndRegion ;~~~~~~~~~~END DrawInSplashScreen
+    If $bCfgSplash Then
+        Global $hSplashGUI = GUICreate("Splash", 373, 128, -1, -1, $WS_POPUP + $WS_DISABLED, $WS_EX_LAYERED + $WS_EX_TOPMOST + $WS_EX_TOOLWINDOW)
+            GUISetState()
+        For $i = 0 To 255 Step 8
+            drawPNG($i)
+        Next
+        Local $tmp = WinGetPos($hSplashGUI)
+        $hSplashBar = GUICreate("SplashBar", 338, 10, $tmp[0]+28, $tmp[1]+111, $WS_POPUP + $WS_DISABLED, $WS_EX_TOPMOST + $WS_EX_TOOLWINDOW)
+            GUISetBkColor (0x444444)
+            GUISetState()
+        $hSplashBarctrl = GUICtrlCreateProgress (1, 1, 336, 8, $PBS_SMOOTH)
+            GUICtrlSetData(-1, 13)
+        ;GUICtrlSetData($hSplashBarctrl, 37)
+        #EndRegion ;~~~~~~~~~~END DrawInSplashScreen
 
-		GUICtrlSetData($hSplashBarctrl, 75)
-	EndIf
+        GUICtrlSetData($hSplashBarctrl, 75)
+    EndIf
 
-	;PLUGIN READ
-	Sleep(1000)
+    ;PLUGIN READ
+    Sleep(1000)
 
-	If $bCfgSplash Then
-		#Region ;~~~~~~~~~~START DrawOutSplashScreen
-		GUICtrlSetData($hSplashBarctrl, 100)
-		Sleep(100)
-		GUIDelete($hSplashBar)
-		GUISwitch($hSplashGUI)
-		For $i = 255 To 0 Step -8
-			drawPNG($i)
-		Next
-		GUIDelete($hSplashGUI)
-		#EndRegion ;~~~~~~~~~~END DrawOutSplashScreen
-		;_GDIPlus_ShutDown()
-	EndIf
+    If $bCfgSplash Then
+        #Region ;~~~~~~~~~~START DrawOutSplashScreen
+        GUICtrlSetData($hSplashBarctrl, 100)
+        Sleep(100)
+        GUIDelete($hSplashBar)
+        GUISwitch($hSplashGUI)
+        For $i = 255 To 0 Step -8
+            drawPNG($i)
+        Next
+        GUIDelete($hSplashGUI)
+        #EndRegion ;~~~~~~~~~~END DrawOutSplashScreen
+        ;_GDIPlus_ShutDown()
+    EndIf
 EndFunc
 
 Func drawPNG($i)
     Local $hScrDC, $hMemDC, $hBitmap, $hOld, $pSize, $tSize, $pSource, $tSource, $pBlend, $tBlend
-	Local $hSplashImage = _ResourceGetAsImage("SPLASH", $RT_RCDATA, $sResources)
+    Local $hSplashImage = _ResourceGetAsImage("SPLASH", $RT_RCDATA, $sResources)
     $hScrDC = _WinAPI_GetDC(0)
     $hMemDC = _WinAPI_CreateCompatibleDC($hScrDC)
     $hBitmap = _GDIPlus_BitmapCreateHBITMAPFromBitmap($hSplashImage)

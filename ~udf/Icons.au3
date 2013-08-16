@@ -38,7 +38,7 @@
 
     _Icons_Control_CheckHandle
     _Icons_Control_CheckSize
-	_Icons_Control_Enum
+    _Icons_Control_Enum
     _Icons_Control_FitTo
     _Icons_Control_GetRect
     _Icons_Control_GetSize
@@ -333,46 +333,46 @@ Global Const $__STM_GETIMAGE = 0x0173
 
 Func _SetCombineBkIcon($hWnd, $iBackground, $sIcon1, $iIndex1 = 0, $iWidth1 = -1, $iHeight1 = -1, $sIcon2 = '', $iIndex2 = 0, $iWidth2 = -1, $iHeight2 = -1, $iX = 0, $iY = 0, $hOverlap = 0)
 
-	$hWnd = _Icons_Control_CheckHandle($hWnd)
-	If $hWnd = 0 Then
-		Return SetError(1, 0, 0)
-	EndIf
+    $hWnd = _Icons_Control_CheckHandle($hWnd)
+    If $hWnd = 0 Then
+        Return SetError(1, 0, 0)
+    EndIf
 
-	Local $hParent
+    Local $hParent
 
-	If $iBackground < 0 Then
-		$hParent = _WinAPI_GetParent($hWnd)
-		If (BitAND(WinGetState($hParent), 2)) And (Not BitAND(WinGetState($hParent), 16)) Then
-			$iBackground = _Icons_System_GetColor($hParent)
-		EndIf
-		If $iBackground < 0 Then
-			$iBackground = _Icons_System_SwitchColor(_WinAPI_GetSysColor($COLOR_3DFACE))
-		EndIf
-	EndIf
+    If $iBackground < 0 Then
+        $hParent = _WinAPI_GetParent($hWnd)
+        If (BitAND(WinGetState($hParent), 2)) And (Not BitAND(WinGetState($hParent), 16)) Then
+            $iBackground = _Icons_System_GetColor($hParent)
+        EndIf
+        If $iBackground < 0 Then
+            $iBackground = _Icons_System_SwitchColor(_WinAPI_GetSysColor($COLOR_3DFACE))
+        EndIf
+    EndIf
 
-	_Icons_Control_CheckSize($hWnd, $iWidth1, $iHeight1)
-	_Icons_Control_CheckSize($hWnd, $iWidth2, $iHeight2)
+    _Icons_Control_CheckSize($hWnd, $iWidth1, $iHeight1)
+    _Icons_Control_CheckSize($hWnd, $iWidth2, $iHeight2)
 
-	Local $hBack = _Icons_Icon_Extract($sIcon1, $iIndex1, $iWidth1, $iHeight1)
-	Local $hFront = _Icons_Icon_Extract($sIcon2, $iIndex2, $iWidth2, $iHeight2)
-	Local $hIcon = _Icons_Icon_Merge($iBackground, $hBack, $hFront, $iX, $iY, $iWidth1, $iHeight1)
+    Local $hBack = _Icons_Icon_Extract($sIcon1, $iIndex1, $iWidth1, $iHeight1)
+    Local $hFront = _Icons_Icon_Extract($sIcon2, $iIndex2, $iWidth2, $iHeight2)
+    Local $hIcon = _Icons_Icon_Merge($iBackground, $hBack, $hFront, $iX, $iY, $iWidth1, $iHeight1)
 
-	If $hBack Then
-		_WinAPI_DestroyIcon($hBack)
-	EndIf
-	If $hFront Then
-		_WinAPI_DestroyIcon($hFront)
-	EndIf
-	If Not ($hOverlap < 0) Then
-		$hOverlap = _Icons_Control_CheckHandle($hOverlap)
-	EndIf
-	If Not _Icons_Control_SetImage($hWnd, $hIcon, $IMAGE_ICON, $hOverlap) Then
-		If $hIcon Then
-			_WinAPI_DestroyIcon($hIcon)
-		EndIf
-		Return SetError(1, 0, 0)
-	EndIf
-	Return 1
+    If $hBack Then
+        _WinAPI_DestroyIcon($hBack)
+    EndIf
+    If $hFront Then
+        _WinAPI_DestroyIcon($hFront)
+    EndIf
+    If Not ($hOverlap < 0) Then
+        $hOverlap = _Icons_Control_CheckHandle($hOverlap)
+    EndIf
+    If Not _Icons_Control_SetImage($hWnd, $hIcon, $IMAGE_ICON, $hOverlap) Then
+        If $hIcon Then
+            _WinAPI_DestroyIcon($hIcon)
+        EndIf
+        Return SetError(1, 0, 0)
+    EndIf
+    Return 1
 EndFunc   ;==>_SetCombineBkIcon
 
 ; #FUNCTION# ====================================================================================================================
@@ -403,25 +403,25 @@ EndFunc   ;==>_SetCombineBkIcon
 
 Func _SetIcon($hWnd, $sIcon, $iIndex = 0, $iWidth = -1, $iHeight = -1, $hOverlap = 0)
 
-	$hWnd = _Icons_Control_CheckHandle($hWnd)
-	If $hWnd = 0 Then
-		Return SetError(1, 0, 0)
-	EndIf
+    $hWnd = _Icons_Control_CheckHandle($hWnd)
+    If $hWnd = 0 Then
+        Return SetError(1, 0, 0)
+    EndIf
 
-	_Icons_Control_CheckSize($hWnd, $iWidth, $iHeight)
+    _Icons_Control_CheckSize($hWnd, $iWidth, $iHeight)
 
-	Local $hIcon = _Icons_Icon_Extract($sIcon, $iIndex, $iWidth, $iHeight)
+    Local $hIcon = _Icons_Icon_Extract($sIcon, $iIndex, $iWidth, $iHeight)
 
-	If Not ($hOverlap < 0) Then
-		$hOverlap = _Icons_Control_CheckHandle($hOverlap)
-	EndIf
-	If Not _Icons_Control_SetImage($hWnd, $hIcon, $IMAGE_ICON, $hOverlap) Then
-		If $hIcon Then
-			_WinAPI_DestroyIcon($hIcon)
-		EndIf
-		Return SetError(1, 0, 0)
-	EndIf
-	Return 1
+    If Not ($hOverlap < 0) Then
+        $hOverlap = _Icons_Control_CheckHandle($hOverlap)
+    EndIf
+    If Not _Icons_Control_SetImage($hWnd, $hIcon, $IMAGE_ICON, $hOverlap) Then
+        If $hIcon Then
+            _WinAPI_DestroyIcon($hIcon)
+        EndIf
+        Return SetError(1, 0, 0)
+    EndIf
+    Return 1
 EndFunc   ;==>_SetIcon
 
 ; #FUNCTION# ====================================================================================================================
@@ -450,36 +450,36 @@ EndFunc   ;==>_SetIcon
 
 Func _SetImage($hWnd, $sImage, $hOverlap = 0)
 
-	$hWnd = _Icons_Control_CheckHandle($hWnd)
-	If $hWnd = 0 Then
-		Return SetError(1, 0, 0)
-	EndIf
+    $hWnd = _Icons_Control_CheckHandle($hWnd)
+    If $hWnd = 0 Then
+        Return SetError(1, 0, 0)
+    EndIf
 
-	Local $Result, $hImage, $hBitmap, $hFit
+    Local $Result, $hImage, $hBitmap, $hFit
 
-	_GDIPlus_Startup()
+    _GDIPlus_Startup()
 
-	$hImage = _GDIPlus_BitmapCreateFromFile($sImage)
-	$hFit = _Icons_Control_FitTo($hWnd, $hImage)
-	$hBitmap = _GDIPlus_BitmapCreateHBITMAPFromBitmap($hFit)
+    $hImage = _GDIPlus_BitmapCreateFromFile($sImage)
+    $hFit = _Icons_Control_FitTo($hWnd, $hImage)
+    $hBitmap = _GDIPlus_BitmapCreateHBITMAPFromBitmap($hFit)
 
-	_GDIPlus_ImageDispose($hFit)
-	_GDIPlus_Shutdown()
+    _GDIPlus_ImageDispose($hFit)
+    _GDIPlus_Shutdown()
 
-	If Not ($hOverlap < 0) Then
-		$hOverlap = _Icons_Control_CheckHandle($hOverlap)
-	EndIf
-	$Result = _Icons_Control_SetImage($hWnd, $hBitmap, $IMAGE_BITMAP, $hOverlap)
-	If $Result Then
-		$hImage = _SendMessage($hWnd, $__STM_GETIMAGE, $IMAGE_BITMAP, 0)
-		If (@error) Or ($hBitmap = $hImage) Then
-			$hBitmap = 0
-		EndIf
-	EndIf
-	If $hBitmap Then
-		_WinAPI_DeleteObject($hBitmap)
-	EndIf
-	Return SetError(1 - $Result, 0, $Result)
+    If Not ($hOverlap < 0) Then
+        $hOverlap = _Icons_Control_CheckHandle($hOverlap)
+    EndIf
+    $Result = _Icons_Control_SetImage($hWnd, $hBitmap, $IMAGE_BITMAP, $hOverlap)
+    If $Result Then
+        $hImage = _SendMessage($hWnd, $__STM_GETIMAGE, $IMAGE_BITMAP, 0)
+        If (@error) Or ($hBitmap = $hImage) Then
+            $hBitmap = 0
+        EndIf
+    EndIf
+    If $hBitmap Then
+        _WinAPI_DeleteObject($hBitmap)
+    EndIf
+    Return SetError(1 - $Result, 0, $Result)
 EndFunc   ;==>_SetImage
 
 ; #FUNCTION# ====================================================================================================================
@@ -509,22 +509,22 @@ EndFunc   ;==>_SetImage
 
 Func _SetHIcon($hWnd, $hIcon, $hOverlap = 0)
 
-	$hWnd = _Icons_Control_CheckHandle($hWnd)
-	If $hWnd = 0 Then
-		Return SetError(1, 0, 0)
-	EndIf
+    $hWnd = _Icons_Control_CheckHandle($hWnd)
+    If $hWnd = 0 Then
+        Return SetError(1, 0, 0)
+    EndIf
 
-	If Not ($hOverlap < 0) Then
-		$hOverlap = _Icons_Control_CheckHandle($hOverlap)
-	EndIf
-	$hIcon = _Icons_Icon_Duplicate($hIcon)
-	If Not _Icons_Control_SetImage($hWnd, $hIcon, $IMAGE_ICON, $hOverlap) Then
-		If $hIcon Then
-			_WinAPI_DestroyIcon($hIcon)
-		EndIf
-		Return SetError(1, 0, 0)
-	EndIf
-	Return 1
+    If Not ($hOverlap < 0) Then
+        $hOverlap = _Icons_Control_CheckHandle($hOverlap)
+    EndIf
+    $hIcon = _Icons_Icon_Duplicate($hIcon)
+    If Not _Icons_Control_SetImage($hWnd, $hIcon, $IMAGE_ICON, $hOverlap) Then
+        If $hIcon Then
+            _WinAPI_DestroyIcon($hIcon)
+        EndIf
+        Return SetError(1, 0, 0)
+    EndIf
+    Return 1
 EndFunc   ;==>_SetHIcon
 
 ; #FUNCTION# ====================================================================================================================
@@ -555,28 +555,28 @@ EndFunc   ;==>_SetHIcon
 
 Func _SetHImage($hWnd, $hBitmap, $hOverlap = 0)
 
-	$hWnd = _Icons_Control_CheckHandle($hWnd)
-	If $hWnd = 0 Then
-		Return SetError(1, 0, 0)
-	EndIf
+    $hWnd = _Icons_Control_CheckHandle($hWnd)
+    If $hWnd = 0 Then
+        Return SetError(1, 0, 0)
+    EndIf
 
-	Local $Result, $hImage
+    Local $Result, $hImage
 
-	If Not ($hOverlap < 0) Then
-		$hOverlap = _Icons_Control_CheckHandle($hOverlap)
-	EndIf
-	$hBitmap = _Icons_Bitmap_Duplicate($hBitmap)
-	$Result = _Icons_Control_SetImage($hWnd, $hBitmap, $IMAGE_BITMAP, $hOverlap)
-	If $Result Then
-		$hImage = _SendMessage($hWnd, $__STM_GETIMAGE, $IMAGE_BITMAP, 0)
-		If (@error) Or ($hBitmap = $hImage) Then
-			$hBitmap = 0
-		EndIf
-	EndIf
-	If $hBitmap Then
-		_WinAPI_DeleteObject($hBitmap)
-	EndIf
-	Return SetError(1 - $Result, 0, $Result)
+    If Not ($hOverlap < 0) Then
+        $hOverlap = _Icons_Control_CheckHandle($hOverlap)
+    EndIf
+    $hBitmap = _Icons_Bitmap_Duplicate($hBitmap)
+    $Result = _Icons_Control_SetImage($hWnd, $hBitmap, $IMAGE_BITMAP, $hOverlap)
+    If $Result Then
+        $hImage = _SendMessage($hWnd, $__STM_GETIMAGE, $IMAGE_BITMAP, 0)
+        If (@error) Or ($hBitmap = $hImage) Then
+            $hBitmap = 0
+        EndIf
+    EndIf
+    If $hBitmap Then
+        _WinAPI_DeleteObject($hBitmap)
+    EndIf
+    Return SetError(1 - $Result, 0, $Result)
 EndFunc   ;==>_SetHImage
 
 #EndRegion Public Functions
@@ -585,626 +585,626 @@ EndFunc   ;==>_SetHImage
 
 Func _Icons_Bitmap_Crop($hBitmap, $iX, $iY, $iWidth, $iHeight)
 
-	If Not _Icons_Bitmap_IsHBitmap($hBitmap) Then
-		Return 0
-	EndIf
+    If Not _Icons_Bitmap_IsHBitmap($hBitmap) Then
+        Return 0
+    EndIf
 
-	Local $hDC, $hDestDC, $SrcDC, $hBmp, $hSrcDC
+    Local $hDC, $hDestDC, $SrcDC, $hBmp, $hSrcDC
 
-	$hDC = _WinAPI_GetDC(0)
-	$hDestDC = _WinAPI_CreateCompatibleDC($hDC)
-	$hBmp = _WinAPI_CreateCompatibleBitmap($hDC, $iWidth, $iHeight)
-	_WinAPI_SelectObject($hDestDC, $hBmp)
-	$hSrcDC = _WinAPI_CreateCompatibleDC($hDC)
-	_WinAPI_SelectObject($hSrcDC, $hBitmap)
-	_WinAPI_ReleaseDC(0, $hDC)
-	If Not _WinAPI_BitBlt($hDestDC, 0, 0, $iWidth, $iHeight, $hSrcDC, $iX, $iY, $SRCCOPY) Then
-		_WinAPI_DeleteObject($hBmp)
-		$hBmp = 0
-	EndIf
+    $hDC = _WinAPI_GetDC(0)
+    $hDestDC = _WinAPI_CreateCompatibleDC($hDC)
+    $hBmp = _WinAPI_CreateCompatibleBitmap($hDC, $iWidth, $iHeight)
+    _WinAPI_SelectObject($hDestDC, $hBmp)
+    $hSrcDC = _WinAPI_CreateCompatibleDC($hDC)
+    _WinAPI_SelectObject($hSrcDC, $hBitmap)
+    _WinAPI_ReleaseDC(0, $hDC)
+    If Not _WinAPI_BitBlt($hDestDC, 0, 0, $iWidth, $iHeight, $hSrcDC, $iX, $iY, $SRCCOPY) Then
+        _WinAPI_DeleteObject($hBmp)
+        $hBmp = 0
+    EndIf
 
-	_WinAPI_DeleteDC($hDestDC)
-	_WinAPI_DeleteDC($hSrcDC)
+    _WinAPI_DeleteDC($hDestDC)
+    _WinAPI_DeleteDC($hSrcDC)
 
-	Return $hBmp
+    Return $hBmp
 EndFunc   ;==>_Icons_Bitmap_Crop
 
 Func _Icons_Bitmap_CreateFromIcon($hIcon)
 
-	Local $tICONINFO = DllStructCreate($tagICONINFO)
-	Local $Ret, $hBitmap
+    Local $tICONINFO = DllStructCreate($tagICONINFO)
+    Local $Ret, $hBitmap
 
-	$Ret = DllCall('user32.dll', 'int', 'GetIconInfo', 'ptr', $hIcon, 'ptr', DllStructGetPtr($tICONINFO))
-	If (@error) Or ($Ret[0] = 0) Then
-		Return 0
-	EndIf
-	$hBitmap = _Icons_Bitmap_Duplicate(DllStructGetData($tICONINFO, 5), 1)
-	If Not _Icons_Bitmap_IsAlpha($hBitmap) Then
-		_GDIPlus_Startup()
-		_WinAPI_DeleteObject($hBitmap)
-		$Ret = DllCall($ghGDIPDll, 'int', 'GdipCreateBitmapFromHICON', 'ptr', $hIcon, 'ptr*', 0)
-		If (Not @error) And ($Ret[0] = 0) Then
-			$hBitmap = _GDIPlus_BitmapCreateHBITMAPFromBitmap($Ret[2])
-			_GDIPlus_ImageDispose($Ret[2])
-		Else
-			$hBitmap = 0
-		EndIf
-		_GDIPlus_Shutdown()
-	EndIf
-	Return $hBitmap
+    $Ret = DllCall('user32.dll', 'int', 'GetIconInfo', 'ptr', $hIcon, 'ptr', DllStructGetPtr($tICONINFO))
+    If (@error) Or ($Ret[0] = 0) Then
+        Return 0
+    EndIf
+    $hBitmap = _Icons_Bitmap_Duplicate(DllStructGetData($tICONINFO, 5), 1)
+    If Not _Icons_Bitmap_IsAlpha($hBitmap) Then
+        _GDIPlus_Startup()
+        _WinAPI_DeleteObject($hBitmap)
+        $Ret = DllCall($ghGDIPDll, 'int', 'GdipCreateBitmapFromHICON', 'ptr', $hIcon, 'ptr*', 0)
+        If (Not @error) And ($Ret[0] = 0) Then
+            $hBitmap = _GDIPlus_BitmapCreateHBITMAPFromBitmap($Ret[2])
+            _GDIPlus_ImageDispose($Ret[2])
+        Else
+            $hBitmap = 0
+        EndIf
+        _GDIPlus_Shutdown()
+    EndIf
+    Return $hBitmap
 EndFunc   ;==>_Icons_Bitmap_CreateFromIcon
 
 Func _Icons_Bitmap_CreateSolidBitmap($iColor, $iWidth, $iHeight)
 
-	Local $hDC, $hMemDC, $tRect, $hBitmap, $hBrush, $tRect = DllStructCreate($tagRECT)
+    Local $hDC, $hMemDC, $tRect, $hBitmap, $hBrush, $tRect = DllStructCreate($tagRECT)
 
-	DllStructSetData($tRect, 1, 0)
-	DllStructSetData($tRect, 2, 0)
-	DllStructSetData($tRect, 3, $iWidth)
-	DllStructSetData($tRect, 4, $iHeight)
+    DllStructSetData($tRect, 1, 0)
+    DllStructSetData($tRect, 2, 0)
+    DllStructSetData($tRect, 3, $iWidth)
+    DllStructSetData($tRect, 4, $iHeight)
 
-	$hDC = _WinAPI_GetDC(0)
-	$hMemDC = _WinAPI_CreateCompatibleDC($hDC)
-	$hBitmap = _WinAPI_CreateCompatibleBitmap($hDC, $iWidth, $iHeight)
-	_WinAPI_SelectObject($hMemDC, $hBitmap)
-	_WinAPI_ReleaseDC(0, $hDC)
-	$hBrush = _WinAPI_CreateSolidBrush(_Icons_System_SwitchColor($iColor))
-	If Not _WinAPI_FillRect($hMemDC, DllStructGetPtr($tRect), $hBrush) Then
-		_WinAPI_DeleteObject($hBitmap)
-		$hBitmap = 0
-	EndIf
+    $hDC = _WinAPI_GetDC(0)
+    $hMemDC = _WinAPI_CreateCompatibleDC($hDC)
+    $hBitmap = _WinAPI_CreateCompatibleBitmap($hDC, $iWidth, $iHeight)
+    _WinAPI_SelectObject($hMemDC, $hBitmap)
+    _WinAPI_ReleaseDC(0, $hDC)
+    $hBrush = _WinAPI_CreateSolidBrush(_Icons_System_SwitchColor($iColor))
+    If Not _WinAPI_FillRect($hMemDC, DllStructGetPtr($tRect), $hBrush) Then
+        _WinAPI_DeleteObject($hBitmap)
+        $hBitmap = 0
+    EndIf
 
-	_WinAPI_DeleteObject($hBrush)
-	_WinAPI_DeleteDC($hMemDC)
+    _WinAPI_DeleteObject($hBrush)
+    _WinAPI_DeleteDC($hMemDC)
 
-	Return $hBitmap
+    Return $hBitmap
 EndFunc   ;==>_Icons_Bitmap_CreateSolidBitmap
 
 Func _Icons_Bitmap_Duplicate($hBitmap, $fDelete = 0)
 
-	If $fDelete Then
-		$fDelete = $LR_COPYDELETEORG
-	EndIf
+    If $fDelete Then
+        $fDelete = $LR_COPYDELETEORG
+    EndIf
 
-	Local $Ret = DllCall('user32.dll', 'hwnd', 'CopyImage', 'ptr', $hBitmap, 'int', 0, 'int', 0, 'int', 0, 'int', BitOR($LR_CREATEDIBSECTION, $fDelete))
+    Local $Ret = DllCall('user32.dll', 'hwnd', 'CopyImage', 'ptr', $hBitmap, 'int', 0, 'int', 0, 'int', 0, 'int', BitOR($LR_CREATEDIBSECTION, $fDelete))
 
-	If (@error) Or ($Ret[0] = 0) Then
-		Return SetError(1, 0, 0)
-	EndIf
-	Return $Ret[0]
+    If (@error) Or ($Ret[0] = 0) Then
+        Return SetError(1, 0, 0)
+    EndIf
+    Return $Ret[0]
 EndFunc   ;==>_Icons_Bitmap_Duplicate
 
 Func _Icons_Bitmap_GetSize($hBitmap)
 
-	If Not _Icons_Bitmap_IsHBitmap($hBitmap) Then
-		Return 0
-	EndIf
+    If Not _Icons_Bitmap_IsHBitmap($hBitmap) Then
+        Return 0
+    EndIf
 
     Local $tObj = DllStructCreate('long Type;long Width;long Height;long WidthBytes;ushort Planes;ushort BitsPixel;ptr Bits')
-	Local $Ret = DllCall('gdi32.dll', 'int', 'GetObject', 'int', $hBitmap, 'int', DllStructGetSize($tObj), 'ptr', DllStructGetPtr($tObj))
+    Local $Ret = DllCall('gdi32.dll', 'int', 'GetObject', 'int', $hBitmap, 'int', DllStructGetSize($tObj), 'ptr', DllStructGetPtr($tObj))
 
-	If (@error) Or ($Ret[0] = 0) Then
-		Return 0
-	EndIf
+    If (@error) Or ($Ret[0] = 0) Then
+        Return 0
+    EndIf
 
-	Local $Size[2] = [DllStructGetData($tObj, 'Width'), DllStructGetData($tObj, 'Height')]
+    Local $Size[2] = [DllStructGetData($tObj, 'Width'), DllStructGetData($tObj, 'Height')]
 
-	If ($Size[0] = 0) Or ($Size[1] = 0) Then
-		Return 0
-	EndIf
-	Return $Size
+    If ($Size[0] = 0) Or ($Size[1] = 0) Then
+        Return 0
+    EndIf
+    Return $Size
 EndFunc   ;==>_Icons_Bitmap_GetSize
 
 Func _Icons_Bitmap_IsAlpha($hBitmap)
 
-	Local $Ret, $tBits, $Length
+    Local $Ret, $tBits, $Length
 
-	$Ret = DllCall('gdi32.dll', 'int', 'GetBitmapBits', 'ptr', $hBitmap, 'long', 0, 'ptr', 0)
-	If (@error) Or ($Ret[0] = 0) Then
-		Return SetError(1, 0, 0)
-	EndIf
-	$Length = $Ret[0] / 4
-	$tBits = DllStructCreate('dword[' & $Length & ']')
-	$Ret = DllCall('gdi32.dll', 'int', 'GetBitmapBits', 'ptr', $hBitmap, 'long', $Ret[0], 'ptr', DllStructGetPtr($tBits))
-	If (@error) Or ($Ret[0] = 0) Then
-		Return SetError(1, 0, 0)
-	EndIf
-	For $i = 1 To $Length
-		If BitAND(DllStructGetData($tBits, 1, $i), 0xFF000000) Then
-			Return 1
-		EndIf
-	Next
-	Return 0
+    $Ret = DllCall('gdi32.dll', 'int', 'GetBitmapBits', 'ptr', $hBitmap, 'long', 0, 'ptr', 0)
+    If (@error) Or ($Ret[0] = 0) Then
+        Return SetError(1, 0, 0)
+    EndIf
+    $Length = $Ret[0] / 4
+    $tBits = DllStructCreate('dword[' & $Length & ']')
+    $Ret = DllCall('gdi32.dll', 'int', 'GetBitmapBits', 'ptr', $hBitmap, 'long', $Ret[0], 'ptr', DllStructGetPtr($tBits))
+    If (@error) Or ($Ret[0] = 0) Then
+        Return SetError(1, 0, 0)
+    EndIf
+    For $i = 1 To $Length
+        If BitAND(DllStructGetData($tBits, 1, $i), 0xFF000000) Then
+            Return 1
+        EndIf
+    Next
+    Return 0
 EndFunc   ;==>_Icons_Bitmap_IsAlpha
 
 Func _Icons_Bitmap_IsHBitmap($hBitmap)
 
-	Local $Ret  = DllCall('gdi32.dll', 'dword', 'GetObjectType', 'ptr', $hBitmap)
+    Local $Ret  = DllCall('gdi32.dll', 'dword', 'GetObjectType', 'ptr', $hBitmap)
 
-	If (Not @error) And ($Ret[0] = 7) Then
-		Return 1
-	EndIf
-	Return 0
+    If (Not @error) And ($Ret[0] = 7) Then
+        Return 1
+    EndIf
+    Return 0
 EndFunc   ;==>_Icons_Bitmap_IsHBitmap
 
 Func _Icons_Bitmap_Load($sImage)
 
-	_GDIPlus_Startup()
+    _GDIPlus_Startup()
 
-	Local $hImage = _GDIPlus_ImageLoadFromFile($sImage)
-	Local $hBitmap = _GDIPlus_BitmapCreateHBITMAPFromBitmap($hImage)
+    Local $hImage = _GDIPlus_ImageLoadFromFile($sImage)
+    Local $hBitmap = _GDIPlus_BitmapCreateHBITMAPFromBitmap($hImage)
 
-	_GDIPlus_ImageDispose($hImage)
-	_GDIPlus_Shutdown()
+    _GDIPlus_ImageDispose($hImage)
+    _GDIPlus_Shutdown()
 
-	Return $hBitmap
+    Return $hBitmap
 EndFunc   ;==>_Icons_Bitmap_Load
 
 Func _Icons_Bitmap_Resize($hBitmap, $iWidth, $iHeight, $fHalftone = 0)
 
-	Local $Size = _Icons_Bitmap_GetSize($hBitmap)
+    Local $Size = _Icons_Bitmap_GetSize($hBitmap)
 
-	If $Size = 0 Then
-		Return 0
-	EndIf
+    If $Size = 0 Then
+        Return 0
+    EndIf
 
-	Local $Ret, $hDC, $hDestDC, $SrcDC, $hBmp, $hSrcDC
+    Local $Ret, $hDC, $hDestDC, $SrcDC, $hBmp, $hSrcDC
 
-	$hDC = _WinAPI_GetDC(0)
-	$hDestDC = _WinAPI_CreateCompatibleDC($hDC)
-	$hBmp = _WinAPI_CreateCompatibleBitmap($hDC, $iWidth, $iHeight)
-	_WinAPI_SelectObject($hDestDC, $hBmp)
-	$hSrcDC = _WinAPI_CreateCompatibleDC($hDC)
-	_WinAPI_SelectObject($hSrcDC, $hBitmap)
-	_WinAPI_ReleaseDC(0, $hDC)
-	If $fHalftone Then
-		$fHalftone = 4
-	Else
-		$fHalftone = 3
-	EndIf
-	DllCall('gdi32.dll', 'int', 'SetStretchBltMode', 'hwnd', $hDestDC, 'int', $fHalftone)
-	$Ret = DllCall('gdi32.dll', 'int', 'StretchBlt', 'hwnd', $hDestDC, 'int', 0, 'int', 0, 'int', $iWidth, 'int', $iHeight, 'hwnd', $hSrcDC, 'int', 0, 'int', 0, 'int', $Size[0], 'int', $Size[1], 'dword', $SRCCOPY)
-	If (@error) Or ($Ret[0] = 0) Then
-		_WinAPI_DeleteObject($hBmp)
-		$hBmp = 0
-	EndIf
+    $hDC = _WinAPI_GetDC(0)
+    $hDestDC = _WinAPI_CreateCompatibleDC($hDC)
+    $hBmp = _WinAPI_CreateCompatibleBitmap($hDC, $iWidth, $iHeight)
+    _WinAPI_SelectObject($hDestDC, $hBmp)
+    $hSrcDC = _WinAPI_CreateCompatibleDC($hDC)
+    _WinAPI_SelectObject($hSrcDC, $hBitmap)
+    _WinAPI_ReleaseDC(0, $hDC)
+    If $fHalftone Then
+        $fHalftone = 4
+    Else
+        $fHalftone = 3
+    EndIf
+    DllCall('gdi32.dll', 'int', 'SetStretchBltMode', 'hwnd', $hDestDC, 'int', $fHalftone)
+    $Ret = DllCall('gdi32.dll', 'int', 'StretchBlt', 'hwnd', $hDestDC, 'int', 0, 'int', 0, 'int', $iWidth, 'int', $iHeight, 'hwnd', $hSrcDC, 'int', 0, 'int', 0, 'int', $Size[0], 'int', $Size[1], 'dword', $SRCCOPY)
+    If (@error) Or ($Ret[0] = 0) Then
+        _WinAPI_DeleteObject($hBmp)
+        $hBmp = 0
+    EndIf
 
-	_WinAPI_DeleteDC($hDestDC)
-	_WinAPI_DeleteDC($hSrcDC)
+    _WinAPI_DeleteDC($hDestDC)
+    _WinAPI_DeleteDC($hSrcDC)
 
-	Return $hBmp
+    Return $hBmp
 EndFunc   ;==>_Icons_Bitmap_Resize
 
 Func _Icons_Control_CheckHandle($hWnd)
-	If Not IsHWnd($hWnd) Then
-		$hWnd = GUICtrlGetHandle($hWnd)
-		If $hWnd = 0 Then
-			Return 0
-		EndIf
-	EndIf
-	Return $hWnd
+    If Not IsHWnd($hWnd) Then
+        $hWnd = GUICtrlGetHandle($hWnd)
+        If $hWnd = 0 Then
+            Return 0
+        EndIf
+    EndIf
+    Return $hWnd
 EndFunc   ;==>_Icons_Control_CheckHandle
 
 Func _Icons_Control_CheckSize($hWnd, ByRef $iX, ByRef $iY)
 
-	Local $Size = _Icons_Control_GetSize($hWnd)
+    Local $Size = _Icons_Control_GetSize($hWnd)
 
-	If $iX < 1 Then
-		If $Size = 0 Then
-			$iX = _WinAPI_GetSystemMetrics($SM_CXICON)
-		Else
-			$iX = $Size[0]
-		EndIf
-	EndIf
-	If $iY < 1 Then
-		If $Size = 0 Then
-			$iY = _WinAPI_GetSystemMetrics($SM_CYICON)
-		Else
-			$iY = $Size[1]
-		EndIf
-	EndIf
+    If $iX < 1 Then
+        If $Size = 0 Then
+            $iX = _WinAPI_GetSystemMetrics($SM_CXICON)
+        Else
+            $iX = $Size[0]
+        EndIf
+    EndIf
+    If $iY < 1 Then
+        If $Size = 0 Then
+            $iY = _WinAPI_GetSystemMetrics($SM_CYICON)
+        Else
+            $iY = $Size[1]
+        EndIf
+    EndIf
 EndFunc   ;==>_Icons_Control_CheckSize
 
 Func _Icons_Control_Enum($hWnd, $iDirection)
 
-	Local $iWnd, $Count = 0, $aWnd[50] = [$hWnd]
+    Local $iWnd, $Count = 0, $aWnd[50] = [$hWnd]
 
-	If $iDirection Then
-		$iDirection = $GW_HWNDNEXT
-	Else
-		$iDirection = $GW_HWNDPREV
-	EndIf
-	While 1
-		$iWnd = _WinAPI_GetWindow($aWnd[$Count], $iDirection)
-		If Not $iWnd Then
-			ExitLoop
-		EndIf
-		$Count += 1
-		If $Count = UBound($aWnd) Then
-			ReDim $aWnd[$Count + 50]
-		EndIf
-		$aWnd[$Count] = $iWnd
-	WEnd
-	ReDim $aWnd[$Count + 1]
-	Return $aWnd
+    If $iDirection Then
+        $iDirection = $GW_HWNDNEXT
+    Else
+        $iDirection = $GW_HWNDPREV
+    EndIf
+    While 1
+        $iWnd = _WinAPI_GetWindow($aWnd[$Count], $iDirection)
+        If Not $iWnd Then
+            ExitLoop
+        EndIf
+        $Count += 1
+        If $Count = UBound($aWnd) Then
+            ReDim $aWnd[$Count + 50]
+        EndIf
+        $aWnd[$Count] = $iWnd
+    WEnd
+    ReDim $aWnd[$Count + 1]
+    Return $aWnd
 EndFunc   ;==>_Icons_Control_Enum
 
 Func _Icons_Control_FitTo($hWnd, $hImage)
 
-	Local $Size = _Icons_Control_GetSize($hWnd)
+    Local $Size = _Icons_Control_GetSize($hWnd)
 
-	If $Size = 0 Then
-		Return SetError(1, 0, $hImage)
-	EndIf
+    If $Size = 0 Then
+        Return SetError(1, 0, $hImage)
+    EndIf
 
-	_GDIPlus_Startup()
+    _GDIPlus_Startup()
 
-	Local $Width = _GDIPlus_ImageGetWidth($hImage), $Height = _GDIPlus_ImageGetHeight($hImage)
-	Local $Ret, $Error = 0
+    Local $Width = _GDIPlus_ImageGetWidth($hImage), $Height = _GDIPlus_ImageGetHeight($hImage)
+    Local $Ret, $Error = 0
 
-	If ($Width = -1) Or ($Height = -1) Then
-		$Error = 1
-	Else
-		If ($Width <> $Size[0]) Or ($Height <> $Size[1]) Then
-			$Ret = DllCall($ghGDIPDll, 'int', 'GdipGetImageThumbnail', 'ptr', $hImage, 'int', $Size[0], 'int', $Size[1], 'ptr*', 0, 'ptr', 0, 'ptr', 0)
-			If (Not @error) And ($Ret[0] = 0) Then
-				_GDIPlus_ImageDispose($hImage)
-				$hImage = $Ret[4]
-			Else
-				$Error = 1
-			EndIf
-		EndIf
-	EndIf
+    If ($Width = -1) Or ($Height = -1) Then
+        $Error = 1
+    Else
+        If ($Width <> $Size[0]) Or ($Height <> $Size[1]) Then
+            $Ret = DllCall($ghGDIPDll, 'int', 'GdipGetImageThumbnail', 'ptr', $hImage, 'int', $Size[0], 'int', $Size[1], 'ptr*', 0, 'ptr', 0, 'ptr', 0)
+            If (Not @error) And ($Ret[0] = 0) Then
+                _GDIPlus_ImageDispose($hImage)
+                $hImage = $Ret[4]
+            Else
+                $Error = 1
+            EndIf
+        EndIf
+    EndIf
 
-	_GDIPlus_Shutdown()
+    _GDIPlus_Shutdown()
 
-	Return SetError($Error, 0, $hImage)
+    Return SetError($Error, 0, $hImage)
 EndFunc   ;==>_Icons_Control_FitTo
 
 Func _Icons_Control_GetRect($hWnd)
 
-	Local $Pos = ControlGetPos($hWnd, '', '')
+    Local $Pos = ControlGetPos($hWnd, '', '')
 
-	If (@error) Or ($Pos[2] = 0) Or ($Pos[3] = 0) Then
-		Return 0
-	EndIf
+    If (@error) Or ($Pos[2] = 0) Or ($Pos[3] = 0) Then
+        Return 0
+    EndIf
 
-	Local $tRect = DllStructCreate($tagRECT)
+    Local $tRect = DllStructCreate($tagRECT)
 
-	DllStructSetData($tRect, 1, $Pos[0])
-	DllStructSetData($tRect, 2, $Pos[1])
-	DllStructSetData($tRect, 3, $Pos[0] + $Pos[2])
-	DllStructSetData($tRect, 4, $Pos[1] + $Pos[3])
+    DllStructSetData($tRect, 1, $Pos[0])
+    DllStructSetData($tRect, 2, $Pos[1])
+    DllStructSetData($tRect, 3, $Pos[0] + $Pos[2])
+    DllStructSetData($tRect, 4, $Pos[1] + $Pos[3])
 
-	Return $tRect
+    Return $tRect
 EndFunc   ;==>_Icons_Control_GetRect
 
 Func _Icons_Control_GetSize($hWnd)
 
-	Local $tRect = DllStructCreate($tagRECT)
-	Local $Ret = DllCall('user32.dll', 'int', 'GetClientRect', 'hwnd', $hWnd, 'ptr', DllStructGetPtr($tRect))
+    Local $tRect = DllStructCreate($tagRECT)
+    Local $Ret = DllCall('user32.dll', 'int', 'GetClientRect', 'hwnd', $hWnd, 'ptr', DllStructGetPtr($tRect))
 
-	If (@error) Or ($Ret[0] = 0) Then
-		Return 0
-	EndIf
+    If (@error) Or ($Ret[0] = 0) Then
+        Return 0
+    EndIf
 
-	Local $Size[2] = [DllStructGetData($tRect, 3) - DllStructGetData($tRect, 1), DllStructGetData($tRect, 4) - DllStructGetData($tRect, 2)]
+    Local $Size[2] = [DllStructGetData($tRect, 3) - DllStructGetData($tRect, 1), DllStructGetData($tRect, 4) - DllStructGetData($tRect, 2)]
 
-	If ($Size[0] = 0) Or ($Size[1] = 0) Then
-		Return 0
-	EndIf
-	Return $Size
+    If ($Size[0] = 0) Or ($Size[1] = 0) Then
+        Return 0
+    EndIf
+    Return $Size
 EndFunc   ;==>_Icons_Control_GetSize
 
 Func _Icons_Control_Invalidate($hWnd)
 
-	Local $tRect = _Icons_Control_GetRect($hWnd)
+    Local $tRect = _Icons_Control_GetRect($hWnd)
 
-	If IsDllStruct($tRect) Then
-		_WinAPI_InvalidateRect(_WinAPI_GetParent($hWnd), $tRect)
-	EndIf
+    If IsDllStruct($tRect) Then
+        _WinAPI_InvalidateRect(_WinAPI_GetParent($hWnd), $tRect)
+    EndIf
 EndFunc   ;==>_Icons_Control_Invalidate
 
 Func _Icons_Control_SetImage($hWnd, $hImage, $iType, $hOverlap)
 
-	Local $Static, $Style, $Update, $tRect, $hPrev
+    Local $Static, $Style, $Update, $tRect, $hPrev
 
-	Switch $iType
-		Case $IMAGE_BITMAP
-			$Static = $__SS_BITMAP
-		Case $IMAGE_ICON
-			$Static = $__SS_ICON
-		Case Else
-			Return 0
-	EndSwitch
+    Switch $iType
+        Case $IMAGE_BITMAP
+            $Static = $__SS_BITMAP
+        Case $IMAGE_ICON
+            $Static = $__SS_ICON
+        Case Else
+            Return 0
+    EndSwitch
 
-	$Style = _WinAPI_GetWindowLong($hWnd, $GWL_STYLE)
-	If @error Then
-		Return 0
-	EndIf
-	_WinAPI_SetWindowLong($hWnd, $GWL_STYLE, BitOR($Style, $Static))
-	If @error Then
-		Return 0
-	EndIf
-	$tRect = _Icons_Control_GetRect($hWnd)
-	$hPrev = _SendMessage($hWnd, $__STM_SETIMAGE, $iType, $hImage)
-	If @error Then
-		Return 0
-	EndIf
-	If $hPrev Then
-		If $iType = $IMAGE_BITMAP Then
-			_WinAPI_DeleteObject($hPrev)
-		Else
-			_WinAPI_DestroyIcon($hPrev)
-		EndIf
-	EndIf
-	If (Not $hImage) And (IsDllStruct($tRect)) Then
-		_WinAPI_MoveWindow($hWnd, DllStructGetData($tRect, 1), DllStructGetData($tRect, 2), DllStructGetData($tRect, 3) - DllStructGetData($tRect, 1), DllStructGetData($tRect, 4) - DllStructGetData($tRect, 2), 0)
-	EndIf
-	If $hOverlap Then
-		If Not IsHWnd($hOverlap) Then
-			$hOverlap = 0
-		EndIf
-		_Icons_Control_Update($hWnd, $hOverlap)
-	Else
-		_Icons_Control_Invalidate($hWnd)
-	EndIf
-	Return 1
+    $Style = _WinAPI_GetWindowLong($hWnd, $GWL_STYLE)
+    If @error Then
+        Return 0
+    EndIf
+    _WinAPI_SetWindowLong($hWnd, $GWL_STYLE, BitOR($Style, $Static))
+    If @error Then
+        Return 0
+    EndIf
+    $tRect = _Icons_Control_GetRect($hWnd)
+    $hPrev = _SendMessage($hWnd, $__STM_SETIMAGE, $iType, $hImage)
+    If @error Then
+        Return 0
+    EndIf
+    If $hPrev Then
+        If $iType = $IMAGE_BITMAP Then
+            _WinAPI_DeleteObject($hPrev)
+        Else
+            _WinAPI_DestroyIcon($hPrev)
+        EndIf
+    EndIf
+    If (Not $hImage) And (IsDllStruct($tRect)) Then
+        _WinAPI_MoveWindow($hWnd, DllStructGetData($tRect, 1), DllStructGetData($tRect, 2), DllStructGetData($tRect, 3) - DllStructGetData($tRect, 1), DllStructGetData($tRect, 4) - DllStructGetData($tRect, 2), 0)
+    EndIf
+    If $hOverlap Then
+        If Not IsHWnd($hOverlap) Then
+            $hOverlap = 0
+        EndIf
+        _Icons_Control_Update($hWnd, $hOverlap)
+    Else
+        _Icons_Control_Invalidate($hWnd)
+    EndIf
+    Return 1
 EndFunc   ;==>_Icons_Control_SetImage
 
 #cs
 
 Func _Icons_Control_Update($hWnd)
 
-	Local $tBack, $tFront = _Icons_Control_GetRect($hWnd)
-	Local $tIntersect = DllStructCreate($tagRECT), $pIntersect = DllStructGetPtr($tIntersect)
-	Local $iWnd, $Ret, $XOffset, $YOffset, $Count = 0, $Result = 0
-	Local $aWnd[50] = [$hWnd]
+    Local $tBack, $tFront = _Icons_Control_GetRect($hWnd)
+    Local $tIntersect = DllStructCreate($tagRECT), $pIntersect = DllStructGetPtr($tIntersect)
+    Local $iWnd, $Ret, $XOffset, $YOffset, $Count = 0, $Result = 0
+    Local $aWnd[50] = [$hWnd]
 
-	While 1
-		$iWnd = _WinAPI_GetWindow($aWnd[$Count], $GW_HWNDPREV)
-		If Not $iWnd Then
-			ExitLoop
-		EndIf
-		$Count += 1
-		If $Count = UBound($aWnd) Then
-			ReDim $aWnd[$Count + 50]
-		EndIf
-		$aWnd[$Count] = $iWnd
-	WEnd
-	If ($Count > 0) And (Not IsDllStruct($tFront)) Then
-		Return 1
-	EndIf
-	For $i = $Count To 1 Step -1
-		$tBack = _Icons_Control_GetRect($aWnd[$i])
-		$Ret = DllCall('user32.dll', 'int', 'IntersectRect', 'ptr', $pIntersect, 'ptr', DllStructGetPtr($tFront), 'ptr', DllStructGetPtr($tBack))
-		If (Not @error) And ($Ret[0]) Then
-			$Ret = DllCall('user32.dll', 'int', 'IsRectEmpty', 'ptr', $pIntersect)
-			If (Not @error) And (Not $Ret[0]) Then
-				$XOffset = DllStructGetData($tBack, 1)
-				$YOffset = DllStructGetData($tBack, 2)
-				$Ret = DllCall('user32.dll', 'int', 'OffsetRect', 'ptr', $pIntersect, 'int', -$XOffset, 'int', -$YOffset)
-				If (Not @error) And ($Ret[0]) Then
-					_WinAPI_InvalidateRect($aWnd[$i], $tIntersect)
-					$Result += 1
-				EndIf
-			EndIf
-		EndIf
-	Next
-	Return $Result
+    While 1
+        $iWnd = _WinAPI_GetWindow($aWnd[$Count], $GW_HWNDPREV)
+        If Not $iWnd Then
+            ExitLoop
+        EndIf
+        $Count += 1
+        If $Count = UBound($aWnd) Then
+            ReDim $aWnd[$Count + 50]
+        EndIf
+        $aWnd[$Count] = $iWnd
+    WEnd
+    If ($Count > 0) And (Not IsDllStruct($tFront)) Then
+        Return 1
+    EndIf
+    For $i = $Count To 1 Step -1
+        $tBack = _Icons_Control_GetRect($aWnd[$i])
+        $Ret = DllCall('user32.dll', 'int', 'IntersectRect', 'ptr', $pIntersect, 'ptr', DllStructGetPtr($tFront), 'ptr', DllStructGetPtr($tBack))
+        If (Not @error) And ($Ret[0]) Then
+            $Ret = DllCall('user32.dll', 'int', 'IsRectEmpty', 'ptr', $pIntersect)
+            If (Not @error) And (Not $Ret[0]) Then
+                $XOffset = DllStructGetData($tBack, 1)
+                $YOffset = DllStructGetData($tBack, 2)
+                $Ret = DllCall('user32.dll', 'int', 'OffsetRect', 'ptr', $pIntersect, 'int', -$XOffset, 'int', -$YOffset)
+                If (Not @error) And ($Ret[0]) Then
+                    _WinAPI_InvalidateRect($aWnd[$i], $tIntersect)
+                    $Result += 1
+                EndIf
+            EndIf
+        EndIf
+    Next
+    Return $Result
 EndFunc   ;==>_Icons_Control_Update
 
 #ce
 
 Func _Icons_Control_Update($hWnd, $hOverlap)
 
-	Local $tBack, $tFront = _Icons_Control_GetRect($hWnd)
+    Local $tBack, $tFront = _Icons_Control_GetRect($hWnd)
 
-	If $tFront = 0 Then
-		Return
-	EndIf
+    If $tFront = 0 Then
+        Return
+    EndIf
 
-	Local $aNext = _Icons_Control_Enum($hWnd, 1)
-	Local $aPrev = _Icons_Control_Enum($hWnd, 0)
+    Local $aNext = _Icons_Control_Enum($hWnd, 1)
+    Local $aPrev = _Icons_Control_Enum($hWnd, 0)
 
-	If UBound($aPrev) = 1 Then
-		_WinAPI_InvalidateRect(_WinAPI_GetParent($hWnd), $tFront)
-		Return
-	EndIf
+    If UBound($aPrev) = 1 Then
+        _WinAPI_InvalidateRect(_WinAPI_GetParent($hWnd), $tFront)
+        Return
+    EndIf
 
-	Local $aWnd[UBound($aNext) + UBound($aPrev - 1)]
-	Local $tIntersect = DllStructCreate($tagRECT), $pIntersect = DllStructGetPtr($tIntersect)
-	Local $iWnd, $Ret, $XOffset, $YOffset, $Count = 0, $Update = 0
+    Local $aWnd[UBound($aNext) + UBound($aPrev - 1)]
+    Local $tIntersect = DllStructCreate($tagRECT), $pIntersect = DllStructGetPtr($tIntersect)
+    Local $iWnd, $Ret, $XOffset, $YOffset, $Count = 0, $Update = 0
 
-	For $i = UBound($aPrev) - 1 To 1 Step -1
-		$aWnd[$Count] = $aPrev[$i]
-		$Count += 1
-	Next
-	For $i = 0 To UBound($aNext) - 1
-		$aWnd[$Count] = $aNext[$i]
-		$Count += 1
-	Next
-	For $i = 0 To $Count - 1
-		If $aWnd[$i] = $hWnd Then
-			_WinAPI_InvalidateRect($hWnd)
-		Else
-			If (Not $hOverlap) Or ($aWnd[$i] = $hOverlap) Then
-				$tBack = _Icons_Control_GetRect($aWnd[$i])
-				$Ret = DllCall('user32.dll', 'int', 'IntersectRect', 'ptr', $pIntersect, 'ptr', DllStructGetPtr($tFront), 'ptr', DllStructGetPtr($tBack))
-				If (Not @error) And ($Ret[0]) Then
-					$Ret = DllCall('user32.dll', 'int', 'IsRectEmpty', 'ptr', $pIntersect)
-					If (Not @error) And (Not $Ret[0]) Then
-						$XOffset = DllStructGetData($tBack, 1)
-						$YOffset = DllStructGetData($tBack, 2)
-						$Ret = DllCall('user32.dll', 'int', 'OffsetRect', 'ptr', $pIntersect, 'int', -$XOffset, 'int', -$YOffset)
-						If (Not @error) And ($Ret[0]) Then
-							_WinAPI_InvalidateRect($aWnd[$i], $tIntersect)
-							$Update += 1
-						EndIf
-					EndIf
-				EndIf
-			EndIf
-		EndIf
-	Next
-	If Not $Update Then
-		_WinAPI_InvalidateRect(_WinAPI_GetParent($hWnd), $tFront)
-	EndIf
+    For $i = UBound($aPrev) - 1 To 1 Step -1
+        $aWnd[$Count] = $aPrev[$i]
+        $Count += 1
+    Next
+    For $i = 0 To UBound($aNext) - 1
+        $aWnd[$Count] = $aNext[$i]
+        $Count += 1
+    Next
+    For $i = 0 To $Count - 1
+        If $aWnd[$i] = $hWnd Then
+            _WinAPI_InvalidateRect($hWnd)
+        Else
+            If (Not $hOverlap) Or ($aWnd[$i] = $hOverlap) Then
+                $tBack = _Icons_Control_GetRect($aWnd[$i])
+                $Ret = DllCall('user32.dll', 'int', 'IntersectRect', 'ptr', $pIntersect, 'ptr', DllStructGetPtr($tFront), 'ptr', DllStructGetPtr($tBack))
+                If (Not @error) And ($Ret[0]) Then
+                    $Ret = DllCall('user32.dll', 'int', 'IsRectEmpty', 'ptr', $pIntersect)
+                    If (Not @error) And (Not $Ret[0]) Then
+                        $XOffset = DllStructGetData($tBack, 1)
+                        $YOffset = DllStructGetData($tBack, 2)
+                        $Ret = DllCall('user32.dll', 'int', 'OffsetRect', 'ptr', $pIntersect, 'int', -$XOffset, 'int', -$YOffset)
+                        If (Not @error) And ($Ret[0]) Then
+                            _WinAPI_InvalidateRect($aWnd[$i], $tIntersect)
+                            $Update += 1
+                        EndIf
+                    EndIf
+                EndIf
+            EndIf
+        EndIf
+    Next
+    If Not $Update Then
+        _WinAPI_InvalidateRect(_WinAPI_GetParent($hWnd), $tFront)
+    EndIf
 EndFunc   ;==>_Icons_Control_Update
 
 Func _Icons_Icon_Duplicate($hIcon)
-	If $hIcon Then
-		Return _WinAPI_CopyIcon($hIcon)
-	EndIf
-	Return 0
+    If $hIcon Then
+        Return _WinAPI_CopyIcon($hIcon)
+    EndIf
+    Return 0
 EndFunc   ;==>_Icons_Icon_Duplicate
 
 Func _Icons_Icon_Extract($sIcon, $iIndex, $iWidth, $iHeight)
 
-	Local $Ret = DllCall('shell32.dll', 'int', 'SHExtractIconsW', 'wstr', $sIcon, 'int', $iIndex, 'int', $iWidth, 'int', $iHeight, 'ptr*', 0, 'ptr*', 0, 'int', 1, 'int', 0)
+    Local $Ret = DllCall('shell32.dll', 'int', 'SHExtractIconsW', 'wstr', $sIcon, 'int', $iIndex, 'int', $iWidth, 'int', $iHeight, 'ptr*', 0, 'ptr*', 0, 'int', 1, 'int', 0)
 
-	If (@error) Or ($Ret[0] = 0) Then
-		Return SetError(1, 0, 0)
-	EndIf
-	Return $Ret[5]
+    If (@error) Or ($Ret[0] = 0) Then
+        Return SetError(1, 0, 0)
+    EndIf
+    Return $Ret[5]
 EndFunc   ;==>_Icons_Icon_Extract
 
 #cs
 
 Func _Icons_Icon_CreateFromBitmap($hBitmap)
 
-	Local $Ret, $hImage, $hIcon = 0
+    Local $Ret, $hImage, $hIcon = 0
 
-	_GDIPlus_Startup()
-	$hImage = _GDIPlus_BitmapCreateFromHBITMAP($hBitmap)
-	If $hImage Then
-		$Ret = DllCall($ghGDIPDll, 'int', 'GdipCreateHICONFromBitmap', 'ptr', $hImage, 'int*', 0)
-		If (Not @error) And ($Ret[0] = 0) Then
-			$hIcon = $Ret[2]
-		EndIf
-		_GDIPlus_ImageDispose($hImage)
-	EndIf
-	_GDIPlus_Shutdown()
-	Return $hIcon
+    _GDIPlus_Startup()
+    $hImage = _GDIPlus_BitmapCreateFromHBITMAP($hBitmap)
+    If $hImage Then
+        $Ret = DllCall($ghGDIPDll, 'int', 'GdipCreateHICONFromBitmap', 'ptr', $hImage, 'int*', 0)
+        If (Not @error) And ($Ret[0] = 0) Then
+            $hIcon = $Ret[2]
+        EndIf
+        _GDIPlus_ImageDispose($hImage)
+    EndIf
+    _GDIPlus_Shutdown()
+    Return $hIcon
 EndFunc   ;==>_Icons_Icon_CreateFromBitmap
 
 #ce
 
 Func _Icons_Icon_CreateFromBitmap($hBitmap)
 
-	Local $Size = _Icons_Bitmap_GetSize($hBitmap)
+    Local $Size = _Icons_Bitmap_GetSize($hBitmap)
 
-	If $Size = 0 Then
-		Return 0
-	EndIf
+    If $Size = 0 Then
+        Return 0
+    EndIf
 
-	Local $tICONINFO = DllStructCreate($tagICONINFO)
-	Local $hMask = _Icons_Bitmap_CreateSolidBitmap(0, $Size[0], $Size[1])
-	Local $hIcon = 0
+    Local $tICONINFO = DllStructCreate($tagICONINFO)
+    Local $hMask = _Icons_Bitmap_CreateSolidBitmap(0, $Size[0], $Size[1])
+    Local $hIcon = 0
 
-	DllStructSetData($tICONINFO, 1, 1)
-	DllStructSetData($tICONINFO, 2, 0)
-	DllStructSetData($tICONINFO, 3, 0)
-	DllStructSetData($tICONINFO, 4, $hMask)
-	DllStructSetData($tICONINFO, 5, $hBitmap)
+    DllStructSetData($tICONINFO, 1, 1)
+    DllStructSetData($tICONINFO, 2, 0)
+    DllStructSetData($tICONINFO, 3, 0)
+    DllStructSetData($tICONINFO, 4, $hMask)
+    DllStructSetData($tICONINFO, 5, $hBitmap)
 
-	Local $Ret = DllCall('user32.dll', 'ptr', 'CreateIconIndirect', 'ptr', DllStructGetPtr($tICONINFO))
-	If (Not @error) And ($Ret[0]) Then
-		$hIcon = $Ret[0]
-	EndIf
-	_WinAPI_DeleteObject($hMask)
-	Return $hIcon
+    Local $Ret = DllCall('user32.dll', 'ptr', 'CreateIconIndirect', 'ptr', DllStructGetPtr($tICONINFO))
+    If (Not @error) And ($Ret[0]) Then
+        $hIcon = $Ret[0]
+    EndIf
+    _WinAPI_DeleteObject($hMask)
+    Return $hIcon
 EndFunc   ;==>_Icons_Icon_CreateFromBitmap
 
 Func _Icons_Icon_GetSize($hIcon)
 
-	Local $tICONINFO = DllStructCreate($tagICONINFO)
-	Local $Ret = DllCall('user32.dll', 'int', 'GetIconInfo', 'ptr', $hIcon, 'ptr', DllStructGetPtr($tICONINFO))
+    Local $tICONINFO = DllStructCreate($tagICONINFO)
+    Local $Ret = DllCall('user32.dll', 'int', 'GetIconInfo', 'ptr', $hIcon, 'ptr', DllStructGetPtr($tICONINFO))
 
-	If (@error) Or ($Ret[0] = 0) Then
-		Return 0
-	EndIf
+    If (@error) Or ($Ret[0] = 0) Then
+        Return 0
+    EndIf
 
-	Local $Size = _Icons_Bitmap_GetSize(DllStructGetData($tICONINFO, 5))
+    Local $Size = _Icons_Bitmap_GetSize(DllStructGetData($tICONINFO, 5))
 
-	_WinAPI_DeleteObject(DllStructGetData($tICONINFO, 4))
-	_WinAPI_DeleteObject(DllStructGetData($tICONINFO, 5))
+    _WinAPI_DeleteObject(DllStructGetData($tICONINFO, 4))
+    _WinAPI_DeleteObject(DllStructGetData($tICONINFO, 5))
 
-	If ($Size[0] = 0) Or ($Size[1] = 0) Then
-		Return 0
-	EndIf
-	Return $Size
+    If ($Size[0] = 0) Or ($Size[1] = 0) Then
+        Return 0
+    EndIf
+    Return $Size
 EndFunc   ;==>_Icons_Icon_GetSize
 
 Func _Icons_Icon_Merge($iBackground, $hBack, $hFront, $iX, $iY, $iWidth = -1, $iHeight = -1)
 
-	Local $Size
+    Local $Size
 
-	If ($iWidth < 1) Or ($iHeight < 1) Then
-		$Size = _Icons_Icon_GetSize($hBack)
-		If $Size = 0 Then
-			Return 0
-		EndIf
-		If $iWidth < 1 Then
-			$iWidth = $Size[0]
-		EndIf
-		If $iHeight < 1 Then
-			$iHeight = $Size[0]
-		EndIf
-	EndIf
+    If ($iWidth < 1) Or ($iHeight < 1) Then
+        $Size = _Icons_Icon_GetSize($hBack)
+        If $Size = 0 Then
+            Return 0
+        EndIf
+        If $iWidth < 1 Then
+            $iWidth = $Size[0]
+        EndIf
+        If $iHeight < 1 Then
+            $iHeight = $Size[0]
+        EndIf
+    EndIf
 
-	Local $hDC, $hMemDC, $hImage, $hBitmap, $hIcon
+    Local $hDC, $hMemDC, $hImage, $hBitmap, $hIcon
 
-	$hDC = _WinAPI_GetDC(0)
-	$hMemDC = _WinAPI_CreateCompatibleDC($hDC)
-	$hBitmap = _Icons_Bitmap_CreateSolidBitmap($iBackground, $iWidth, $iHeight)
-	_WinAPI_SelectObject($hMemDC, $hBitmap)
-	_WinAPI_ReleaseDC(0, $hDC)
-	If $hBack Then
-		_WinAPI_DrawIconEx($hMemDC, 0, 0, $hBack, 0, 0, 0, 0, $DI_NORMAL)
-	EndIf
-	If $hFront Then
-		_WinAPI_DrawIconEx($hMemDC, $iX, $iY, $hFront, 0, 0, 0, 0, $DI_NORMAL)
-	EndIf
+    $hDC = _WinAPI_GetDC(0)
+    $hMemDC = _WinAPI_CreateCompatibleDC($hDC)
+    $hBitmap = _Icons_Bitmap_CreateSolidBitmap($iBackground, $iWidth, $iHeight)
+    _WinAPI_SelectObject($hMemDC, $hBitmap)
+    _WinAPI_ReleaseDC(0, $hDC)
+    If $hBack Then
+        _WinAPI_DrawIconEx($hMemDC, 0, 0, $hBack, 0, 0, 0, 0, $DI_NORMAL)
+    EndIf
+    If $hFront Then
+        _WinAPI_DrawIconEx($hMemDC, $iX, $iY, $hFront, 0, 0, 0, 0, $DI_NORMAL)
+    EndIf
 
-	_GDIPlus_Startup()
+    _GDIPlus_Startup()
 
-	$hImage = _GDIPlus_BitmapCreateFromHBITMAP($hBitmap)
-	$hIcon = DllCall($ghGDIPDll, 'int', 'GdipCreateHICONFromBitmap', 'ptr', $hImage, 'ptr*', 0)
-	If (Not @error) And ($hIcon[0] = 0) Then
-		$hIcon = $hIcon[2]
-	Else
-		$hIcon = 0
-	EndIf
+    $hImage = _GDIPlus_BitmapCreateFromHBITMAP($hBitmap)
+    $hIcon = DllCall($ghGDIPDll, 'int', 'GdipCreateHICONFromBitmap', 'ptr', $hImage, 'ptr*', 0)
+    If (Not @error) And ($hIcon[0] = 0) Then
+        $hIcon = $hIcon[2]
+    Else
+        $hIcon = 0
+    EndIf
 
-	_GDIPlus_ImageDispose($hImage)
-	_GDIPlus_Shutdown()
+    _GDIPlus_ImageDispose($hImage)
+    _GDIPlus_Shutdown()
 
-	_WinAPI_DeleteObject($hBitmap)
-	_WinAPI_DeleteDC($hMemDC)
+    _WinAPI_DeleteObject($hBitmap)
+    _WinAPI_DeleteDC($hMemDC)
 
-	Return $hIcon
+    Return $hIcon
 EndFunc   ;==>_Icons_Icon_Merge
 
 Func _Icons_System_GetColor($hWnd)
 
-	Local $Ret, $hDC = _WinAPI_GetDC($hWnd)
+    Local $Ret, $hDC = _WinAPI_GetDC($hWnd)
 
-	If $hDC = 0 Then
-		Return -1
-	EndIf
-	$Ret = DllCall('gdi32.dll', 'int', 'GetBkColor', 'hwnd', $hDC)
-	If (@error) Or ($Ret[0] < 0) Then
-		$Ret = -1
-	EndIf
-	_WinAPI_ReleaseDC($hWnd, $hDC)
-	If $Ret < 0 Then
-		Return -1
-	EndIf
-	Return _Icons_System_SwitchColor($Ret[0])
+    If $hDC = 0 Then
+        Return -1
+    EndIf
+    $Ret = DllCall('gdi32.dll', 'int', 'GetBkColor', 'hwnd', $hDC)
+    If (@error) Or ($Ret[0] < 0) Then
+        $Ret = -1
+    EndIf
+    _WinAPI_ReleaseDC($hWnd, $hDC)
+    If $Ret < 0 Then
+        Return -1
+    EndIf
+    Return _Icons_System_SwitchColor($Ret[0])
 EndFunc   ;==>_Icons_System_GetColor
 
 Func _Icons_System_SwitchColor($iColor)
-	Return BitOR(BitAND($iColor, 0x00FF00), BitShift(BitAND($iColor, 0x0000FF), -16), BitShift(BitAND($iColor, 0xFF0000), 16))
+    Return BitOR(BitAND($iColor, 0x00FF00), BitShift(BitAND($iColor, 0x0000FF), -16), BitShift(BitAND($iColor, 0xFF0000), 16))
 EndFunc   ;==>_Icons_System_SwitchColor
 
 #EndRegion Internal Functions

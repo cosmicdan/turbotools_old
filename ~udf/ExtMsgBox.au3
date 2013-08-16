@@ -228,7 +228,7 @@ Func _ExtMsgBox($vIcon, $iButton, $sTitle, $sText, $iTimeout = 0, $hWin = "", $i
         EndSwitch
     Else
         $sDLL = $vIcon
-		$iIcon_Style = $iIcon
+        $iIcon_Style = $iIcon
     EndIf
 
     ; Check if using constants or text
@@ -357,7 +357,7 @@ Func _ExtMsgBox($vIcon, $iButton, $sTitle, $sText, $iTimeout = 0, $hWin = "", $i
     If $iVPos + $iMsg_Height > @DesktopHeight - 60 Then $iVPos = @DesktopHeight - 60 - $iMsg_Height
 
     ; Create GUI with $WS_POPUPWINDOW, $WS_CAPTION style and $WS_EX_TOPMOST extended style
-	; CosmicDan - also with $WS_EX_TOOLWINDOW
+    ; CosmicDan - also with $WS_EX_TOOLWINDOW
     Local $hMsgGUI = GUICreate($sTitle, $iMsg_Width, $iMsg_Height, $iHpos, $iVPos, BitOR(0x80880000, 0x00C00000), BitOR(0x00000008, 0x00000080), $iParent_Win)
     If @error Then
         $nOldOpt = Opt('GUIOnEventMode', $nOldOpt)
