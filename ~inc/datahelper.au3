@@ -20,3 +20,12 @@ Func findpage($pluginandpage, $isdraw)
         Return $iPageCtrlIndex
     EndIf
 EndFunc
+
+Func _IniRead($sFile, $sSection, $sKey, $sDefaultValue = "0xDEAD 0xBEEF")
+    Local $sIniReturn = IniRead($sFile, $sSection, $sKey, $sDefaultValue)
+    If $sIniReturn = "0xDEAD 0xBEEF" Then
+        ThrowError(1, $sKey)
+        SetError(1)
+    EndIf
+    Return $sIniReturn
+EndFunc

@@ -3,7 +3,8 @@ Func page_static_error($sPluginPath, $sPluginFilename)
     If GUICtrlGetState($aPageCtrl[$iPageIndex][1]) > 0 Then
         GUICtrlSetState($aPageCtrl[$iPageIndex][1], $GUI_SHOW)
     Else
-        Local $sBanner = IniRead($sPage, "static", "banner", "0")
+        Local $sBanner = _IniRead($sPage, "static", "banner", 0)
+        If @error Then Return 0
         $aPageCtrl[$iPageIndex][1] = GUICtrlCreatePic("", $aTTWinMainCurrentSize[0]-525, 0, 525, 48)
         If FileExists(@ScriptDir & '\' & $sPluginPath & '\' & $sBanner) Then
             ;[TODO] Custom banner graphic
@@ -16,7 +17,8 @@ Func page_static_error($sPluginPath, $sPluginFilename)
     If GUICtrlGetState($aPageCtrl[$iPageIndex][2]) > 0 Then
         GUICtrlSetState($aPageCtrl[$iPageIndex][2], $GUI_SHOW)
     Else
-        Local $sBannerFill = IniRead($sPage, "static", "bannerfill", "0x3f4e67")
+        Local $sBannerFill = _IniRead($sPage, "static", "bannerfill", "0x3f4e67")
+        If @error Then Return 0
         $aPageCtrl[$iPageIndex][2] = GUICtrlCreateLabel("", 0, 0, $aTTWinMainCurrentSize[0]-525, 48)
         GUICtrlSetBkColor(-1, $sBannerFill)
         GUICtrlSetResizing(-1, $GUI_DOCKLEFT + $GUI_DOCKRIGHT + $GUI_DOCKHEIGHT)
@@ -25,7 +27,8 @@ Func page_static_error($sPluginPath, $sPluginFilename)
     If GUICtrlGetState($aPageCtrl[$iPageIndex][3]) > 0 Then
         GUICtrlSetState($aPageCtrl[$iPageIndex][3], $GUI_SHOW)
     Else
-        Local $sBannerIcon = IniRead($sPage, "static", "bannericon", "0")
+        Local $sBannerIcon = _IniRead($sPage, "static", "bannericon", 0)
+        If @error Then Return 0
         If FileExists(@ScriptDir & '\' & $sPluginPath & '\' & $sBannerIcon) Then
             ;[TODO] Custom icon code
         Else
@@ -46,7 +49,8 @@ Func page_static_error($sPluginPath, $sPluginFilename)
         GUICtrlSetFont(-1, 16, 500, Default, "Trebuchet MS", 5)
         GUICtrlSetResizing(-1, $GUI_DOCKLEFT + $GUI_DOCKRIGHT + $GUI_DOCKTOP + $GUI_DOCKHEIGHT)
         GUICtrlSetBkColor(-1, $GUI_BKCOLOR_TRANSPARENT)
-        Local $sPageTitleColor = IniRead($sPage, "static", "titletextcolor", "0xeeeeee")
+        Local $sPageTitleColor = _IniRead($sPage, "static", "titletextcolor", "0xeeeeee")
+        If @error Then Return 0
         GUICtrlSetColor (-1, $sPageTitleColor)
     EndIf
     ; draw subtitle
@@ -57,7 +61,8 @@ Func page_static_error($sPluginPath, $sPluginFilename)
         GUICtrlSetFont(-1, 10, 500, Default, "Trebuchet MS", 5)
         GUICtrlSetResizing(-1, $GUI_DOCKLEFT + $GUI_DOCKRIGHT + $GUI_DOCKTOP + $GUI_DOCKHEIGHT)
         GUICtrlSetBkColor(-1, $GUI_BKCOLOR_TRANSPARENT)
-        Local $sPageTitleColor = IniRead($sPage, "static", "subtitletextcolor", "0xeeeeee")
+        Local $sPageTitleColor = _IniRead($sPage, "static", "subtitletextcolor", "0xeeeeee")
+        If @error Then Return 0
         GUICtrlSetColor (-1, $sPageTitleColor)
     EndIf
     If GUICtrlGetState($aPageCtrl[$iPageIndex][6]) > 0 Then

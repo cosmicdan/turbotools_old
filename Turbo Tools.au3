@@ -103,6 +103,7 @@ Global $hTTWinMain = GUICreate($sSysTitle, 700, 500, -1, -1, BitOR($WS_OVERLAPPE
 
 echo ("[#] Loading core includes...")
 #include "~inc\buttonrow.au3"
+#include "~inc\errorhandler.au3"
 #include "~inc\datahelper.au3"
 echo ("[#] Loading static page templates...")
 #include "~inc\page_static.au3"

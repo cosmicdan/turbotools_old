@@ -3,7 +3,8 @@ Func page_task_selectrom($sPluginPath, $sPluginFilename)
     If GUICtrlGetState($aPageCtrl[$iPageIndex][1]) > 0 Then
         GUICtrlSetState($aPageCtrl[$iPageIndex][1], $GUI_SHOW)
     Else
-        Local $sBanner = IniRead($sPage, "task", "banner", "0")
+        Local $sBanner = _IniRead($sPage, "task", "banner", 0)
+        If @error Then Return 0
         $aPageCtrl[$iPageIndex][1] = GUICtrlCreatePic("", $aTTWinMainCurrentSize[0]-525, 0, 525, 48)
         If FileExists(@ScriptDir & '\' & $sPluginPath & '\' & $sBanner) Then
             ;[TODO] Custom banner graphic
@@ -16,7 +17,8 @@ Func page_task_selectrom($sPluginPath, $sPluginFilename)
     If GUICtrlGetState($aPageCtrl[$iPageIndex][2]) > 0 Then
         GUICtrlSetState($aPageCtrl[$iPageIndex][2], $GUI_SHOW)
     Else
-        Local $sBannerFill = IniRead($sPage, "task", "bannerfill", "0x3f4e67")
+        Local $sBannerFill = _IniRead($sPage, "task", "bannerfill", "0x3f4e67")
+        If @error Then Return 0
         $aPageCtrl[$iPageIndex][2] = GUICtrlCreateLabel("", 0, 0, $aTTWinMainCurrentSize[0]-525, 48)
         GUICtrlSetBkColor(-1, $sBannerFill)
         GUICtrlSetResizing(-1, $GUI_DOCKLEFT + $GUI_DOCKRIGHT + $GUI_DOCKHEIGHT)
@@ -25,7 +27,8 @@ Func page_task_selectrom($sPluginPath, $sPluginFilename)
     If GUICtrlGetState($aPageCtrl[$iPageIndex][3]) > 0 Then
         GUICtrlSetState($aPageCtrl[$iPageIndex][3], $GUI_SHOW)
     Else
-        Local $sBannerIcon = IniRead($sPage, "task", "bannericon", "0")
+        Local $sBannerIcon = _IniRead($sPage, "task", "bannericon", 0)
+        If @error Then Return 0
         If FileExists(@ScriptDir & '\' & $sPluginPath & '\' & $sBannerIcon) Then
             ;[TODO] Custom icon code
         Else
@@ -42,24 +45,28 @@ Func page_task_selectrom($sPluginPath, $sPluginFilename)
     If GUICtrlGetState($aPageCtrl[$iPageIndex][4]) > 0 Then
         GUICtrlSetState($aPageCtrl[$iPageIndex][4], $GUI_SHOW)
     Else
-        Local $sPageTitle = IniRead($sPage, "task", "titletext", "Untitled")
+        Local $sPageTitle = _IniRead($sPage, "task", "titletext", "Untitled")
+        If @error Then Return 0
         $aPageCtrl[$iPageIndex][4] = GUICtrlCreateLabel($sPageTitle, 20, 3, $aTTWinMainCurrentSize[0]-20, 24)
         GUICtrlSetFont(-1, 16, 500, Default, "Trebuchet MS", 5)
         GUICtrlSetResizing(-1, $GUI_DOCKLEFT + $GUI_DOCKRIGHT + $GUI_DOCKTOP + $GUI_DOCKHEIGHT)
         GUICtrlSetBkColor(-1, $GUI_BKCOLOR_TRANSPARENT)
-        Local $sPageTitleColor = IniRead($sPage, "static", "titletextcolor", "0xeeeeee")
+        Local $sPageTitleColor = _IniRead($sPage, "static", "titletextcolor", "0xeeeeee")
+        If @error Then Return 0
         GUICtrlSetColor (-1, $sPageTitleColor)
     EndIf
     ; draw subtitle
     If GUICtrlGetState($aPageCtrl[$iPageIndex][5]) > 0 Then
         GUICtrlSetState($aPageCtrl[$iPageIndex][5], $GUI_SHOW)
     Else
-        Local $sPageTitle = IniRead($sPage, "task", "subtitletext", "Subtitle")
+        Local $sPageTitle = _IniRead($sPage, "task", "subtitletext", "Subtitle")
+        If @error Then Return 0
         $aPageCtrl[$iPageIndex][5] = GUICtrlCreateLabel($sPageTitle, 40, 28, $aTTWinMainCurrentSize[0]-80, 28)
         GUICtrlSetFont(-1, 10, 500, Default, "Trebuchet MS", 5)
         GUICtrlSetResizing(-1, $GUI_DOCKLEFT + $GUI_DOCKRIGHT + $GUI_DOCKTOP + $GUI_DOCKHEIGHT)
         GUICtrlSetBkColor(-1, $GUI_BKCOLOR_TRANSPARENT)
-        Local $sPageTitleColor = IniRead($sPage, "task", "subtitletextcolor", "0xeeeeee")
+        Local $sPageTitleColor = _IniRead($sPage, "task", "subtitletextcolor", "0xeeeeee")
+        If @error Then Return 0
         GUICtrlSetColor (-1, $sPageTitleColor)
     EndIf
 
@@ -67,7 +74,8 @@ Func page_task_selectrom($sPluginPath, $sPluginFilename)
     If GUICtrlGetState($aPageCtrl[$iPageIndex][6]) > 0 Then
         GUICtrlSetState($aPageCtrl[$iPageIndex][6], $GUI_SHOW)
     Else
-        Local $sHeadText = IniRead($sPage, "task", "headtext", "Select a ROM in either an update ZIP package or an existing folder on your PC.")
+        Local $sHeadText = _IniRead($sPage, "task", "headtext", "Select a ROM in either an update ZIP package or an existing folder on your PC.")
+        If @error Then Return 0
         $sHeadText = StringReplace($sHeadText, "|n|", @CRLF)
         $aPageCtrl[$iPageIndex][6] = GUICtrlCreateLabel($sHeadText, 20, 90, $aTTWinMainCurrentSize[0]-40, 80, $SS_CENTER)
         GUICtrlSetBkColor(-1, $GUI_BKCOLOR_TRANSPARENT)
@@ -163,10 +171,11 @@ Func page_task_selectrom_action()
 EndFunc
 
 Func page_task_selectrom_verify()
-    Local $sVerifyText = IniRead($sPage, "task", "footertextverify", "Verifying...")
-    Local $sVerifyOK = IniRead($sPage, "task", "footertextverifyok", "Valid")
-    Local $sVerifyBad = IniRead($sPage, "task", "footertextverifybad", "Invalid")
-    Local $sCheckFile =  IniRead($sPage, "task", "checkfile", "system\build.prop")
+    Local $sVerifyText = _IniRead($sPage, "task", "footertextverify", "Verifying...")
+    Local $sVerifyOK = _IniRead($sPage, "task", "footertextverifyok", "Valid")
+    Local $sVerifyBad = _IniRead($sPage, "task", "footertextverifybad", "Invalid")
+    Local $sCheckFile =  _IniRead($sPage, "task", "checkfile", "system\build.prop")
+    If @error Then Return 0
     Local $sPath = GUICtrlRead($aPageCtrl[$iPageIndex][10])
     If $sPath = "" Then Return
     GuiCtrlSetData($aPageCtrl[$iPageIndex][13], $sVerifyText)

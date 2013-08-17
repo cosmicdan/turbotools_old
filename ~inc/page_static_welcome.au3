@@ -3,7 +3,8 @@ Func page_static_welcome($sPluginPath, $sPluginFilename)
     If GUICtrlGetState($aPageCtrl[$iPageIndex][1]) > 0 Then
         GUICtrlSetState($aPageCtrl[$iPageIndex][1], $GUI_SHOW)
     Else
-        Local $sBanner = IniRead($sPage, "static", "banner", "0")
+        Local $sBanner = _IniRead($sPage, "static", "banner", 0)
+        If @error Then Return 0
         $aPageCtrl[$iPageIndex][1] = GUICtrlCreatePic("", 0, 0, 180, 458)
         If FileExists(@ScriptDir & '\' & $sPluginPath & '\' & $sBanner) Then
             ;[TODO] Custom banner graphic
@@ -16,7 +17,8 @@ Func page_static_welcome($sPluginPath, $sPluginFilename)
     If GUICtrlGetState($aPageCtrl[$iPageIndex][2]) > 0 Then
         GUICtrlSetState($aPageCtrl[$iPageIndex][2], $GUI_SHOW)
     Else
-        Local $sBannerFill = IniRead($sPage, "static", "bannerfill", "0x5a7094")
+        Local $sBannerFill = _IniRead($sPage, "static", "bannerfill", "0x5a7094")
+        If @error Then Return 0
         $aPageCtrl[$iPageIndex][2] = GUICtrlCreateLabel("", 0, 456, 180, $aTTWinMainCurrentSize[1]-498)
         GUICtrlSetBkColor(-1, $sBannerFill)
         GUICtrlSetResizing(-1, $GUI_DOCKTOP + $GUI_DOCKBOTTOM + $GUI_DOCKWIDTH)
@@ -29,7 +31,8 @@ Func page_static_welcome($sPluginPath, $sPluginFilename)
         GUICtrlSetResizing(-1, $GUI_DOCKLEFT + $GUI_DOCKRIGHT + $GUI_DOCKTOP + $GUI_DOCKBOTTOM)
         _IENavigate($oIE, "about:blank")
     EndIf
-    Local $sHTML = IniRead($sPage, "static", "content", $sPluginFilename & '.html')
+    Local $sHTML = _IniRead($sPage, "static", "content", $sPluginFilename & '.html')
+    If @error Then Return 0
     If FileExists(@ScriptDir & '\' & $sPluginPath & '\' & $sHTML) Then
         _IEDocWriteHTML($oIE, FileRead(@ScriptDir & '\' & $sPluginPath & '\' & $sHTML))
     Else
@@ -40,8 +43,9 @@ Func page_static_welcome($sPluginPath, $sPluginFilename)
                         0, $hTTWinMain, 0, -7)
     EndIf
     _IEAction($oIE, "refresh")
-    Local $sScroll = IniRead($sPage, "static", "scroll", "0")
-    If $sScroll = "0" Then
+    Local $sScroll = _IniRead($sPage, "static", "scroll", 0)
+    If @error Then Return 0
+    If $sScroll = 0 Then
         $oIE.document.body.scroll = "no"
     EndIf
 EndFunc

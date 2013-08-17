@@ -3,7 +3,8 @@ Func page_static_selector2x2($sPluginPath, $sPluginFilename)
     If GUICtrlGetState($aPageCtrl[$iPageIndex][1]) > 0 Then
         GUICtrlSetState($aPageCtrl[$iPageIndex][1], $GUI_SHOW)
     Else
-        Local $sBanner = IniRead($sPage, "static", "banner", "0")
+        Local $sBanner = _IniRead($sPage, "static", "banner", 0)
+        If @error Then Return 0
         $aPageCtrl[$iPageIndex][1] = GUICtrlCreatePic("", $aTTWinMainCurrentSize[0]-525, 0, 525, 48)
         If FileExists(@ScriptDir & '\' & $sPluginPath & '\' & $sBanner) Then
             ;[TODO] Custom banner graphic
@@ -16,7 +17,8 @@ Func page_static_selector2x2($sPluginPath, $sPluginFilename)
     If GUICtrlGetState($aPageCtrl[$iPageIndex][2]) > 0 Then
         GUICtrlSetState($aPageCtrl[$iPageIndex][2], $GUI_SHOW)
     Else
-        Local $sBannerFill = IniRead($sPage, "static", "bannerfill", "0x3f4e67")
+        Local $sBannerFill = _IniRead($sPage, "static", "bannerfill", "0x3f4e67")
+        If @error Then Return 0
         $aPageCtrl[$iPageIndex][2] = GUICtrlCreateLabel("", 0, 0, $aTTWinMainCurrentSize[0]-525, 48)
         GUICtrlSetBkColor(-1, $sBannerFill)
         GUICtrlSetResizing(-1, $GUI_DOCKLEFT + $GUI_DOCKRIGHT + $GUI_DOCKHEIGHT)
@@ -25,7 +27,8 @@ Func page_static_selector2x2($sPluginPath, $sPluginFilename)
     If GUICtrlGetState($aPageCtrl[$iPageIndex][3]) > 0 Then
         GUICtrlSetState($aPageCtrl[$iPageIndex][3], $GUI_SHOW)
     Else
-        Local $sBannerIcon = IniRead($sPage, "static", "bannericon", "0")
+        Local $sBannerIcon = _IniRead($sPage, "static", "bannericon", 0)
+        If @error Then Return 0
         If FileExists(@ScriptDir & '\' & $sPluginPath & '\' & $sBannerIcon) Then
             ;[TODO] Custom icon code
         Else
@@ -42,32 +45,38 @@ Func page_static_selector2x2($sPluginPath, $sPluginFilename)
     If GUICtrlGetState($aPageCtrl[$iPageIndex][4]) > 0 Then
         GUICtrlSetState($aPageCtrl[$iPageIndex][4], $GUI_SHOW)
     Else
-        Local $sPageTitle = IniRead($sPage, "static", "titletext", "Untitled")
+        Local $sPageTitle = _IniRead($sPage, "static", "titletext", "Untitled")
+        If @error Then Return 0
         $aPageCtrl[$iPageIndex][4] = GUICtrlCreateLabel($sPageTitle, 20, 3, $aTTWinMainCurrentSize[0]-20, 24)
         GUICtrlSetFont(-1, 16, 500, Default, "Trebuchet MS", 5)
         GUICtrlSetResizing(-1, $GUI_DOCKLEFT + $GUI_DOCKRIGHT + $GUI_DOCKTOP + $GUI_DOCKHEIGHT)
         GUICtrlSetBkColor(-1, $GUI_BKCOLOR_TRANSPARENT)
-        Local $sPageTitleColor = IniRead($sPage, "static", "titletextcolor", "0xeeeeee")
+        Local $sPageTitleColor = _IniRead($sPage, "static", "titletextcolor", "0xeeeeee")
+        If @error Then Return 0
         GUICtrlSetColor (-1, $sPageTitleColor)
     EndIf
     ; draw subtitle
     If GUICtrlGetState($aPageCtrl[$iPageIndex][5]) > 0 Then
         GUICtrlSetState($aPageCtrl[$iPageIndex][5], $GUI_SHOW)
     Else
-        Local $sPageTitle = IniRead($sPage, "static", "subtitletext", "Subtitle")
+        Local $sPageTitle = _IniRead($sPage, "static", "subtitletext", "Subtitle")
+        If @error Then Return 0
         $aPageCtrl[$iPageIndex][5] = GUICtrlCreateLabel($sPageTitle, 40, 28, $aTTWinMainCurrentSize[0]-80, 28)
         GUICtrlSetFont(-1, 10, 500, Default, "Trebuchet MS", 5)
         GUICtrlSetResizing(-1, $GUI_DOCKLEFT + $GUI_DOCKRIGHT + $GUI_DOCKTOP + $GUI_DOCKHEIGHT)
         GUICtrlSetBkColor(-1, $GUI_BKCOLOR_TRANSPARENT)
-        Local $sPageTitleColor = IniRead($sPage, "static", "subtitletextcolor", "0xeeeeee")
+        Local $sPageTitleColor = _IniRead($sPage, "static", "subtitletextcolor", "0xeeeeee")
+        If @error Then Return 0
         GUICtrlSetColor (-1, $sPageTitleColor)
     EndIf
     ; first button (at 1x1)
     If GUICtrlGetState($aPageCtrl[$iPageIndex][6]) > 0 Then
         GUICtrlSetState($aPageCtrl[$iPageIndex][6], $GUI_SHOW)
     Else
-        Local $sButton1x1_text = IniRead($sPage, "static", "button1x1_text", "Button1")
-        Local $sButton1x1_icon = IniRead($sPage, "static", "button1x1_icon", "0")
+        Local $sButton1x1_text = _IniRead($sPage, "static", "button1x1_text", "Button1")
+        If @error Then Return 0
+        Local $sButton1x1_icon = _IniRead($sPage, "static", "button1x1_icon")
+        If @error Then Return 0
         $aPageCtrl[$iPageIndex][6] = GUICtrlCreateButton(@CR & @CR & @CR & @CR & $sButton1x1_text, $aTTWinMainCurrentSize[0]*0.20, $aTTWinMainCurrentSize[1]*0.20, $aTTWinMainCurrentSize[0]*0.29, $aTTWinMainCurrentSize[1]*0.29, BitOR($BS_CENTER,$BS_MULTILINE))
         ;GUICtrlSetResizing(-1, $GUI_DOCKHEIGHT + $GUI_DOCKWIDTH + $GUI_DOCKHCENTER + $GUI_DOCKVCENTER)
         GUICtrlSetResizing(-1, $GUI_DOCKHCENTER + $GUI_DOCKVCENTER)
@@ -78,8 +87,10 @@ Func page_static_selector2x2($sPluginPath, $sPluginFilename)
     If GUICtrlGetState($aPageCtrl[$iPageIndex][7]) > 0 Then
         GUICtrlSetState($aPageCtrl[$iPageIndex][7], $GUI_SHOW)
     Else
-        Local $sButton1x2_text = IniRead($sPage, "static", "button1x2_text", "Button2")
-        Local $sButton1x2_icon = IniRead($sPage, "static", "button1x2_icon", "0")
+        Local $sButton1x2_text = _IniRead($sPage, "static", "button1x2_text", "Button2")
+        If @error Then Return 0
+        Local $sButton1x2_icon = _IniRead($sPage, "static", "button1x2_icon")
+        If @error Then Return 0
         $aPageCtrl[$iPageIndex][7] = GUICtrlCreateButton(@CR & @CR & @CR & @CR & $sButton1x2_text, $aTTWinMainCurrentSize[0]*0.50, $aTTWinMainCurrentSize[1]*0.20, $aTTWinMainCurrentSize[0]*0.29, $aTTWinMainCurrentSize[1]*0.29, BitOR($BS_CENTER,$BS_MULTILINE))
         GUICtrlSetResizing(-1, $GUI_DOCKHCENTER + $GUI_DOCKVCENTER)
         ButtonIcon32(-1, $sButton1x2_icon)
@@ -89,8 +100,10 @@ Func page_static_selector2x2($sPluginPath, $sPluginFilename)
     If GUICtrlGetState($aPageCtrl[$iPageIndex][8]) > 0 Then
         GUICtrlSetState($aPageCtrl[$iPageIndex][8], $GUI_SHOW)
     Else
-        Local $sButton2x1_text = IniRead($sPage, "static", "button2x1_text", "Button3")
-        Local $sButton2x1_icon = IniRead($sPage, "static", "button2x1_icon", "0")
+        Local $sButton2x1_text = _IniRead($sPage, "static", "button2x1_text", "Button3")
+        If @error Then Return 0
+        Local $sButton2x1_icon = _IniRead($sPage, "static", "button2x1_icon")
+        If @error Then Return 0
         $aPageCtrl[$iPageIndex][8] = GUICtrlCreateButton(@CR & @CR & @CR & @CR & $sButton2x1_text, $aTTWinMainCurrentSize[0]*0.20, $aTTWinMainCurrentSize[1]*0.50, $aTTWinMainCurrentSize[0]*0.29, $aTTWinMainCurrentSize[1]*0.29, BitOR($BS_CENTER,$BS_MULTILINE))
         GUICtrlSetResizing(-1, $GUI_DOCKHCENTER + $GUI_DOCKVCENTER)
         ButtonIcon32(-1, $sButton2x1_icon)
@@ -100,8 +113,10 @@ Func page_static_selector2x2($sPluginPath, $sPluginFilename)
     If GUICtrlGetState($aPageCtrl[$iPageIndex][9]) > 0 Then
         GUICtrlSetState($aPageCtrl[$iPageIndex][9], $GUI_SHOW)
     Else
-        Local $sButton2x2_text = IniRead($sPage, "static", "button2x2_text", "Button4")
-        Local $sButton2x2_icon = IniRead($sPage, "static", "button2x2_icon", "0")
+        Local $sButton2x2_text = _IniRead($sPage, "static", "button2x2_text", "Button4")
+        If @error Then Return 0
+        Local $sButton2x2_icon = _IniRead($sPage, "static", "button2x2_icon")
+        If @error Then Return 0
         $aPageCtrl[$iPageIndex][9] = GUICtrlCreateButton(@CR & @CR & @CR & @CR & $sButton2x2_text, $aTTWinMainCurrentSize[0]*0.50, $aTTWinMainCurrentSize[1]*0.50, $aTTWinMainCurrentSize[0]*0.29, $aTTWinMainCurrentSize[1]*0.29, BitOR($BS_CENTER,$BS_MULTILINE))
         GUICtrlSetResizing(-1, $GUI_DOCKHCENTER + $GUI_DOCKVCENTER)
         ButtonIcon32(-1, $sButton2x2_icon)
@@ -112,27 +127,20 @@ EndFunc
 Func page_static_selector2x2_action()
     Switch @GUI_CtrlId
         Case $aPageCtrl[$iPageIndex][6] ; first button
-            Local $sButton_type = IniRead($sPage, "static", "button1x1_type", "page")
-            Local $sButton_data = IniRead($sPage, "static", "button1x1_data", "0")
-            Local $sButton_target = "button1x1_data"
+            Local $sButton_type = _IniRead($sPage, "static", "button1x1_type", "page")
+            Local $sButton_data = _IniRead($sPage, "static", "button1x1_data")
         Case $aPageCtrl[$iPageIndex][7] ; second button
-            Local $sButton_type = IniRead($sPage, "static", "button1x2_type", "page")
-            Local $sButton_data = IniRead($sPage, "static", "button1x2_data", "0")
-            Local $sButton_target = "button1x2_data"
+            Local $sButton_type = _IniRead($sPage, "static", "button1x2_type", "page")
+            Local $sButton_data = _IniRead($sPage, "static", "button1x2_data")
         Case $aPageCtrl[$iPageIndex][8] ; third button
-            Local $sButton_type = IniRead($sPage, "static", "button2x1_type", "page")
-            Local $sButton_data = IniRead($sPage, "static", "button2x1_data", "0")
-            Local $sButton_target = "button2x1_data"
+            Local $sButton_type = _IniRead($sPage, "static", "button2x1_type", "page")
+            Local $sButton_data = _IniRead($sPage, "static", "button2x1_data")
         Case $aPageCtrl[$iPageIndex][9] ; fourth button
-            Local $sButton_type = IniRead($sPage, "static", "button2x2_type", "page")
-            Local $sButton_data = IniRead($sPage, "static", "button2x2_data", "0")
-            Local $sButton_target = "button2x2_data"
+            Local $sButton_type = _IniRead($sPage, "static", "button2x2_type", "page")
+            Local $sButton_data = _IniRead($sPage, "static", "button2x2_data")
     EndSwitch
-    If $sButton_data = "0" Then
-        ThrowError(1, $sButton_target)
-    Else
-        Call("page_static_selector2x2_action_" & $sButton_type, $sButton_data)
-    EndIf
+    If @error Then Return 0
+    Call("page_static_selector2x2_action_" & $sButton_type, $sButton_data)
 EndFunc
 
 Func page_static_selector2x2_action_page($sData)
