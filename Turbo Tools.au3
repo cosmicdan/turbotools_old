@@ -161,6 +161,7 @@ Func DrawPage($plugin, $inifile)
     ; [TODO] Verify requested plugin folder exists
     $sPage = @ScriptDir & '\plugins\' & $plugin & '\' & $inifile & '.ini'
     If FileExists($sPage) = "0" Then
+        echo ("[!] Error! Requested INI file at 'plugins\" & $plugin & "\" & $inifile & ".ini' does not exist.")
         _ExtMsgBox($sResources, 0, "Internal Error", 'Page not found:' & @CRLF & _
                                         'plugins\' & $plugin & '\' & $inifile & '.ini', _
                                         0, $hTTWinMain, 0, -7)
