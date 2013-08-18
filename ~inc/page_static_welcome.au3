@@ -41,6 +41,7 @@ Func page_static_welcome($sPluginPath, $sPluginFilename)
                         'At section [common]; key "content"' & @CRLF & _
                         'File not found: "' & @ScriptDir & '\' & $sPluginPath & '\' & $sHTML & '"', _
                         0, $hTTWinMain, 0, -7)
+        GUISwitch($hTTWinMain)
     EndIf
     _IEAction($oIE, "refresh")
     Local $sScroll = _IniRead($sPage, "static", "scroll", 0)

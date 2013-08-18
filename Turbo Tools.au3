@@ -95,8 +95,14 @@ EndIf
 
 #EndRegion ;~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~END Initialization
 
-Global $bCfgSplash = 0
-Global $bCfgQuickQuit = 1
+Global $bCfgSplash = 1 ;show splash screen by default
+Global $bCfgQuickQuit = 0 ;confirm quit by default
+
+If Not @Compiled Then
+    ; faster stuff for debug runs
+    $bCfgSplash = 0
+    $bCfgQuickQuit = 1
+EndIf
 #include "~inc\boot.au3"
 Boot()
 
@@ -142,6 +148,7 @@ ElseIf FileExists(@ScriptDir & '\debug') Then
     ;enable if "debug" file exists in program folder
     echo("[!] .\debug flag found, running in debugging mode")
     $bDebug = True
+    $bCfgQuickQuit = 1
     echo("    [i] Showing TT Console... hello there!")
     GUISetState(@SW_SHOW, $hDebugConsoleWin) ; display console window
     setWindowIcon(1)
@@ -211,6 +218,7 @@ Func DrawPage($plugin, $inifile)
             _ExtMsgBox($sResources, 0, "Internal Error", 'Error in plugins\' & $plugin & '\' & $inifile & '.ini' & @CRLF & _
                         'Section not found: [buttonrow]', _
                         0, $hTTWinMain, 0, -7)
+            GUISwitch($hTTWinMain)
         Else
             For $i = 1 To $aTTBtn[0][0]
                 DoButtonRow($aTTBtn[$i][0],$aTTBtn[$i][1], 'plugins\' & $plugin & '\' & $inifile & '.ini')
@@ -223,6 +231,7 @@ Func DrawPage($plugin, $inifile)
                     'At section [common]' & @CRLF & _
                     'Key not found: "type"', _
                     0, $hTTWinMain, 0, -7)
+        GUISwitch($hTTWinMain)
     Else
         Select
             Case $pagetype = "static"
@@ -234,6 +243,7 @@ Func DrawPage($plugin, $inifile)
                             'At section [common]; key "type"' & @CRLF & _
                             'Unknown value: "' & $pagetype & '"', _
                             0, $hTTWinMain, 0, -7)
+                GUISwitch($hTTWinMain)
         EndSelect
     EndIf
 EndFunc
@@ -249,7 +259,8 @@ Func TTWinMainButtonEvent()
     Switch @GUI_CtrlId
         Case $hTTBtn[1]
             If _GUICtrlButton_GetText($hTTBtn[1]) = "Options..." Then
-                _ExtMsgBox($sResources, 0, $sSysTitle, "Nothing to configure yet =)", 10, $hTTWinMain, 0, -13)
+                _ExtMsgBox($sResources, 0, $sSysTitle, "Options not implemented yet.", 10, $hTTWinMain, 0, -13)
+                GUISwitch($hTTWinMain)
             EndIf
         Case $hTTBtn[2]
             If _GUICtrlButton_GetText($hTTBtn[2]) = "About..." Then
@@ -257,12 +268,12 @@ Func TTWinMainButtonEvent()
             EndIf
         Case $hTTBtn[3] ; custom
             Local $sCustomTask = IniRead(@ScriptDir & '\plugins\' & $sCurrentPlugin & '\' & $sCurrentPage & '.ini', "buttonrow", "customtask", "debugpane")
-            ;_ExtMsgBox($sResources, 0, $sSysTitle, "[TODO] - Show options for debugging Turbo Tools", 10, $hTTWinMain, 0, -5)
             If $sCustomTask = "debugpane" Then
                 GUISetState(@SW_SHOW, $hDebugConsoleWin) ; display console window
                 WinActivate("TT Console")
             Else
                 _ExtMsgBox($sResources, 0, $sSysTitle, "Error - requested custom task '" & $sCustomTask & "' is not valid.", 10, $hTTWinMain, 0, -5)
+                GUISwitch($hTTWinMain)
             EndIf
             ;$sPreviousPage = $sCurrentPage
         Case $hTTBtn[4] ; back
@@ -272,6 +283,7 @@ Func TTWinMainButtonEvent()
                     'At section [buttonrow]' & @CRLF & _
                     'Key not found: "backpage"', _
                     0, $hTTWinMain, 0, -7)
+                GUISwitch($hTTWinMain)
             Else
                 $sPreviousPage = $sCurrentPlugin & "|" & $sCurrentPage
                 DrawPage($sCurrentPlugin, $sBackPage)
@@ -283,6 +295,7 @@ Func TTWinMainButtonEvent()
                     'At section [buttonrow]' & @CRLF & _
                     'Key not found: "nextpage"', _
                     0, $hTTWinMain, 0, -7)
+                GUISwitch($hTTWinMain)
             Else
                 $sPreviousPage = $sCurrentPlugin & "|" & $sCurrentPage
                 DrawPage($sCurrentPlugin, $sNextPage)
@@ -316,6 +329,7 @@ Func TTQuit()
         ; If pending task, show "warning - tasks pending" prompt
         Local $result = _ExtMsgBox($sResources, 4, $sSysTitle, "Are you sure you want to quit?" & @CRLF & _
                                     "All selected changes will be lost.", 0, $hTTWinMain, 0, -6)
+        GUISwitch($hTTWinMain)
         If $result = 1 Then
             echo ("[#] User quit")
             Exit

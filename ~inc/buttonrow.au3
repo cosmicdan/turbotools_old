@@ -86,6 +86,7 @@ Func DoButtonRow($key, $value, $sPluginIni)
                     'At section [buttonrow]' & @CRLF & _
                     'Key not recognized: "' & $key & '"', _
                     0, $hTTWinMain, 0, -8)
+            GUISwitch($hTTWinMain)
     EndSelect
     ; Always show quit/cancel button
     GUICtrlSetState($hTTBtn[6], $GUI_SHOW)
