@@ -65,12 +65,41 @@ Func page_static_error($sPluginPath, $sPluginFilename)
         If @error Then Return 0
         GUICtrlSetColor (-1, $sPageTitleColor)
     EndIf
+
+    ; "Crashed" text
     If GUICtrlGetState($aPageCtrl[$iPageIndex][6]) > 0 Then
         GUICtrlSetState($aPageCtrl[$iPageIndex][6], $GUI_SHOW)
     Else
-        $aPageCtrl[$iPageIndex][6] = GUICtrlCreateLabel("Turbo Tools has crashed. Press 'Debug' to dump current data index, logs and other info; or press 'Bail Out' to close." , 30, 100, $aTTWinMainCurrentSize[0]-80, 40)
+        $aPageCtrl[$iPageIndex][6] = GUICtrlCreateLabel("Turbo Tools has crashed. Reason:" , 30, 100, $aTTWinMainCurrentSize[0]-60, 30)
         GUICtrlSetFont(-1, 10, 500, Default, "Trebuchet MS", 5)
         GUICtrlSetResizing(-1, $GUI_DOCKLEFT + $GUI_DOCKRIGHT + $GUI_DOCKTOP + $GUI_DOCKHEIGHT)
         GUICtrlSetBkColor(-1, $GUI_BKCOLOR_TRANSPARENT)
     EndIf
+    ; "Reason" text, provided by $sExtraData where provided
+    If $sExtraData = False Then
+        $sExtraData = "No reason was given by the plugin."
+    Else
+        $sExtraData = StringReplace($sExtraData, "|n|", @CRLF)
+    EndIf
+    If GUICtrlGetState($aPageCtrl[$iPageIndex][7]) > 0 Then
+        GUICtrlSetState($aPageCtrl[$iPageIndex][7], $GUI_SHOW)
+        GUICtrlSetData($aPageCtrl[$iPageIndex][7], $sExtraData)
+    Else
+        $aPageCtrl[$iPageIndex][7] = GUICtrlCreateLabel($sExtraData, 40, 140, $aTTWinMainCurrentSize[0]-80, 80)
+        GUICtrlSetFont(-1, 10, 500, Default, "Trebuchet MS", 5)
+        GUICtrlSetResizing(-1, $GUI_DOCKLEFT + $GUI_DOCKRIGHT + $GUI_DOCKTOP + $GUI_DOCKHEIGHT)
+        GUICtrlSetBkColor(-1, $GUI_BKCOLOR_TRANSPARENT)
+    EndIf
+    ; It's essential to clear the sExtraData field to prevent it from being reused
+    $sExtraData = False
+    ; Footer text
+    If GUICtrlGetState($aPageCtrl[$iPageIndex][8]) > 0 Then
+        GUICtrlSetState($aPageCtrl[$iPageIndex][8], $GUI_SHOW)
+    Else
+        $aPageCtrl[$iPageIndex][8] = GUICtrlCreateLabel("Press 'Debug' to see technical info, or press 'Bail Out' to quit." , 25, $aTTWinMainCurrentSize[1]-80, $aTTWinMainCurrentSize[0]-50, 30, $SS_RIGHT)
+        GUICtrlSetFont(-1, 10, 500, Default, "Trebuchet MS", 5)
+        GUICtrlSetResizing(-1, $GUI_DOCKLEFT + $GUI_DOCKRIGHT + $GUI_DOCKBOTTOM + $GUI_DOCKHEIGHT)
+        GUICtrlSetBkColor(-1, $GUI_BKCOLOR_TRANSPARENT)
+    EndIf
+
 EndFunc

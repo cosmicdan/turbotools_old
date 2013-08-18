@@ -7,7 +7,7 @@ Func findpage($pluginandpage, $isdraw)
         _ArrayAdd($aPluginPage, $pluginandpage & '|' & $iPageCtrlIndex) ; add the entry with third value of the new index to use for page controls
         __ArrayAdd($aPageCtrl, $pluginandpage)
         ; Return the index of $aPageCtrl where this page's data *will* be held
-        echo ('    [#] Page ' & $pluginandpage & ' is new, created data index at ' & $iPageCtrlIndex)
+        echo ('    [#] Page ' & $pluginandpage & ' is new, creating page data at index ' & $iPageCtrlIndex)
         Return $iPageCtrlIndex
     Else
         ;page data exists

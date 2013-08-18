@@ -49,6 +49,7 @@ _IEErrorHandlerRegister()
 Opt("GUIOnEventMode", 1)
 Opt("GUICloseOnESC", 0)
 Opt("MustDeclareVars", 1)
+Opt("WinTitleMatchMode", 3) ; exact title match
 
 #include "~udf\ArrayAdd2D.au3"
 #include "~udf\ExtMsgBox.au3"
@@ -80,6 +81,8 @@ Global $iPageIndex ; needed since we can't pass parameters to control-event func
 Global $sPage ; as above
 ; globals for "toolwindow" dialogs (about, debug, etc)
 Global $hToolWindow, $hToolWindowHyperlink1, $hToolWindowCloseBtn
+; the "extra" data field is a somewhat arbitrary variable that is used in a variety of places to pass data around
+Global $sExtraData = False
 
 _ExtMsgBoxSet(1, 0, -1, -1, -1, -1)
 
@@ -173,6 +176,7 @@ echo ("Bad Exit! Loop was broken! Probable interpreter crash...!")
 
 Func DrawPage($plugin, $inifile)
     echo ("[i] Loading page '" & $inifile & "' from " & $plugin & " plugin")
+    GUISwitch($hTTWinMain)
     ; update globals
     $sCurrentPlugin = $plugin
     $sCurrentPage = $inifile
@@ -191,13 +195,8 @@ Func DrawPage($plugin, $inifile)
     ; [TODO] Verify requested plugin folder exists
     $sPage = @ScriptDir & '\plugins\' & $plugin & '\' & $inifile & '.ini'
     If FileExists($sPage) = "0" Then
-        echo ("[!] Error! Requested INI file at 'plugins\" & $plugin & "\" & $inifile & ".ini' does not exist.")
-        If Not $bDebug Then
-            _ExtMsgBox($sResources, 0, "Internal Error", 'Page not found:' & @CRLF & _
-                                       'plugins\' & $plugin & '\' & $inifile & '.ini', _
-                                       0, $hTTWinMain, 0, -7)
-        EndIf
-        ; [TODO] User option to either cancel pagination, or do the hard-fault as it does now. Default would be to cancel and return to previous page, since the hard fault is useful only to those making plugins
+        echo ("[!] Error! Requested INI file at 'plugins\" & $plugin & "\" & $inifile & ".ini' does not exist - requested by " & $sPreviousPage)
+        $sExtraData = "The page '" & $inifile & "' was not found in the plugin '" & $plugin & "'."
         $sPage = @ScriptDir & '\plugins\core\page_error.ini'
         $plugin = 'core'
         $inifile = 'page_error'
@@ -258,7 +257,13 @@ Func TTWinMainButtonEvent()
             EndIf
         Case $hTTBtn[3] ; custom
             Local $sCustomTask = IniRead(@ScriptDir & '\plugins\' & $sCurrentPlugin & '\' & $sCurrentPage & '.ini', "buttonrow", "customtask", "debugpane")
-            _ExtMsgBox($sResources, 0, $sSysTitle, "[TODO] - Show options for debugging Turbo Tools", 10, $hTTWinMain, 0, -5)
+            ;_ExtMsgBox($sResources, 0, $sSysTitle, "[TODO] - Show options for debugging Turbo Tools", 10, $hTTWinMain, 0, -5)
+            If $sCustomTask = "debugpane" Then
+                GUISetState(@SW_SHOW, $hDebugConsoleWin) ; display console window
+                WinActivate("TT Console")
+            Else
+                _ExtMsgBox($sResources, 0, $sSysTitle, "Error - requested custom task '" & $sCustomTask & "' is not valid.", 10, $hTTWinMain, 0, -5)
+            EndIf
             ;$sPreviousPage = $sCurrentPage
         Case $hTTBtn[4] ; back
             Local $sBackPage = IniRead(@ScriptDir & '\plugins\' & $sCurrentPlugin & '\' & $sCurrentPage & '.ini', "buttonrow", "backpage", "0")
