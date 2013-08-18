@@ -15,7 +15,6 @@
 #EndRegion ;**** Directives created by AutoIt3Wrapper_GUI ****
 
 #Region ;~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~START Initialization
-echo("[#] Turbo Tools booting...")
 
 #include <GUIConstantsEx.au3>
 #include <GDIPlus.au3>
@@ -33,6 +32,17 @@ echo("[#] Turbo Tools booting...")
 #include <FontConstants.au3>
 #include <IE.au3>
 #include <Array.au3>
+#include <GuiRichEdit.au3>
+#include <GuiEdit.au3>
+
+; The debug flag makes slight modifications to GUI elements and workflow to try and make development/testing easier. This bool is assigned later in boot
+Global $bDebug
+;Draw Debugging window
+Global $hDebugConsoleWin = GUICreate("TT Console", 700, 300, 40, 40, BitOR($WS_POPUP, $WS_CAPTION, $WS_SYSMENU))
+Global $hDebugConsoleTxt = _GUICtrlRichEdit_Create($hDebugConsoleWin, "", 0, 0, 700, 300, BitOR($ES_NOHIDESEL, $ES_MULTILINE, $ES_READONLY, $WS_HSCROLL, $WS_VSCROLL, $ES_AUTOVSCROLL))
+
+
+echo("[#] Turbo Tools booting...")
 
 _IEErrorHandlerRegister()
 
@@ -54,7 +64,6 @@ Global $sResources = @ScriptDir & '\resources.dll'
 Global $sSysTitle = "Turbo Tools"
 Global $sSysVer = FileGetVersion(@ScriptFullPath)
 Global $sSysRev = "Build " & FileGetVersion(@ScriptFullPath, "Timestamp")
-
 
 Global $aTTWinMainCurrentSize
 Global $aPluginPage[1] ;dynamic size array
@@ -93,7 +102,7 @@ Boot()
 echo ("[#] Loading main GUI...")
 Opt("GUIResizeMode", $GUI_DOCKAUTO)
 Global $hTTWinMain = GUICreate($sSysTitle, 700, 500, -1, -1, BitOR($WS_OVERLAPPEDWINDOW, $WS_SIZEBOX))
-    setIcon(1)
+    setWindowIcon(1)
     GUISetFont(9, 400, Default, "Trebuchet MS", -1, 5)
     GUISetBkColor (0xeeecde)
     Opt("GUIResizeMode", $GUI_DOCKLEFT + $GUI_DOCKRIGHT + $GUI_DOCKTOP + $GUI_DOCKHEIGHT)
@@ -105,6 +114,7 @@ echo ("[#] Loading core includes...")
 #include "~inc\buttonrow.au3"
 #include "~inc\errorhandler.au3"
 #include "~inc\datahelper.au3"
+#include "~inc\echo.au3"
 echo ("[#] Loading static page templates...")
 #include "~inc\page_static.au3"
 #include "~inc\page_static_error.au3"
@@ -115,6 +125,26 @@ echo ("[#] Loading task page templates...")
 #include "~inc\page_task_selectrom.au3"
 echo ("[#] Loading Tool Windows...")
 #include "~inc\toolwindow_about.au3"
+
+;The debug flag makes slight modifications to GUI elements and workflow to try and make development/testing easier
+If Not @Compiled Then
+    ;enable if not compiled
+    echo("[!] Uncompiled script, running in debugging mode")
+    $bDebug = True
+    echo("    [i] Showing TT Console... hello there!")
+    GUISetState(@SW_SHOW, $hDebugConsoleWin) ; display console window
+    setWindowIcon(1)
+    GUISwitch($hTTWinMain)
+ElseIf FileExists(@ScriptDir & '\debug') Then
+    ;enable if "debug" file exists in program folder
+    echo("[!] .\debug flag found, running in debugging mode")
+    $bDebug = True
+    echo("    [i] Showing TT Console... hello there!")
+    GUISetState(@SW_SHOW, $hDebugConsoleWin) ; display console window
+    setWindowIcon(1)
+    GUISwitch($hTTWinMain)
+EndIf
+
 echo ("[i] Running.")
 
 GUISetState(@SW_SHOW)
@@ -162,9 +192,11 @@ Func DrawPage($plugin, $inifile)
     $sPage = @ScriptDir & '\plugins\' & $plugin & '\' & $inifile & '.ini'
     If FileExists($sPage) = "0" Then
         echo ("[!] Error! Requested INI file at 'plugins\" & $plugin & "\" & $inifile & ".ini' does not exist.")
-        _ExtMsgBox($sResources, 0, "Internal Error", 'Page not found:' & @CRLF & _
-                                        'plugins\' & $plugin & '\' & $inifile & '.ini', _
-                                        0, $hTTWinMain, 0, -7)
+        If Not $bDebug Then
+            _ExtMsgBox($sResources, 0, "Internal Error", 'Page not found:' & @CRLF & _
+                                       'plugins\' & $plugin & '\' & $inifile & '.ini', _
+                                       0, $hTTWinMain, 0, -7)
+        EndIf
         ; [TODO] User option to either cancel pagination, or do the hard-fault as it does now. Default would be to cancel and return to previous page, since the hard fault is useful only to those making plugins
         $sPage = @ScriptDir & '\plugins\core\page_error.ini'
         $plugin = 'core'
@@ -293,23 +325,19 @@ EndFunc
 #Region ;~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~Internel Event Handlers
 
 Func MY_WM_GETMINMAXINFO($hWnd, $Msg, $wParam, $lParam)
-    Local $minmaxinfo = DllStructCreate("int;int;int;int;int;int;int;int;int;int",$lParam)
-    DllStructSetData($minmaxinfo,7,$hTTWinMainMinimumSize[2]) ; min X
-    DllStructSetData($minmaxinfo,8,$hTTWinMainMinimumSize[3]) ; min Y
-    Return 0
+    If $hWnd = $hTTWinMain Then
+        Local $minmaxinfo = DllStructCreate("int;int;int;int;int;int;int;int;int;int",$lParam)
+        DllStructSetData($minmaxinfo,7,$hTTWinMainMinimumSize[2]) ; min X
+        DllStructSetData($minmaxinfo,8,$hTTWinMainMinimumSize[3]) ; min Y
+        Return 0
+    EndIf
 EndFunc
 
 Func RuntimeProc()
     _ReduceMemory(0)
 EndFunc
 
-Func echo($in)
-    ; ShellExecute("eventcreate", '/L Application /T INFORMATION /SO TurboTools /ID 1 /D "Hello!"', -1, "open", @SW_HIDE)
-    ; Note to self - Event Log requires administrator rights
-    ConsoleWrite ($in & @CRLF)
-EndFunc
-
-Func setIcon($index)
+Func setWindowIcon($index)
     If @Compiled AND $index=1 Then
         GUISetIcon (@AutoItExe, -1)
     Else

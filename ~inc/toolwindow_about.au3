@@ -1,7 +1,7 @@
 Func DialogAbout()
     GUISetState(@SW_DISABLE, $hTTWinMain)
     $hToolWindow = GUICreate("About Android ProShop", 404, 470, -1, -1, $WS_POPUP + $WS_BORDER, -1, $hTTWinMain)
-        setIcon(1)
+        setWindowIcon(1)
         ;GUISetBkColor(0xf0f0f0)
         GUICtrlCreatePic("",0,0,404,470)
             _ResourceSetImageToCtrl(-1, "ABOUTBOX", $RT_RCDATA, $sResources)
