@@ -1,0 +1,3 @@
+An empty DLL file for storing resources. Don't try to call it, it won't do anything. It was made in Visual C++ 2008, a compiled DLL file straight after the Wizard created it (literally empty, except for the version data).
+
+With ResHackerFX in the path, it is just scripted to add the required resources.
