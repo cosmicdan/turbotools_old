@@ -3,7 +3,6 @@
 #AutoIt3Wrapper_Icon=..\_resources\ICON_000_MAIN.ico
 #AutoIt3Wrapper_Outfile=..\Turbo Tools.exe
 #AutoIt3Wrapper_Compression=4
-#AutoIt3Wrapper_Change2CUI=y
 #AutoIt3Wrapper_Res_Comment=Turbo Tools
 #AutoIt3Wrapper_Res_Description=All-in-one tool for customizing Android
 #AutoIt3Wrapper_Res_Fileversion=0.1.0.0
@@ -31,4 +30,4 @@ If Not FileExists($sLoaderFile) Then
     MsgBox(4096, "Error", "Couldn't find main.au3")
 EndIf
 
-RunWait(@AutoItExe & " /ErrorStdOut /AutoIt3ExecuteScript " & $sLoaderFile)
+RunWait(@AutoItExe & " /AutoIt3ExecuteScript " & $sLoaderFile)

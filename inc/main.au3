@@ -1,31 +1,9 @@
 #NoTrayIcon
 #AutoIt3Wrapper_Run_AU3Check=n
 #Region ;~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~START Initialization
+
 ; core AutoIt includes
-
-#include "core\ProcessConstants.au3"
-#include "core\GUIConstantsEx.au3"
-#include "core\GDIPlus.au3"
-#include "core\WinAPI.au3"
-#include "core\StructureConstants.au3"
-#include "core\Constants.au3"
-#include "core\WindowsConstants.au3"
-#include "core\ButtonConstants.au3"
-#include "core\StaticConstants.au3"
-#include "core\ProgressConstants.au3"
-#include "core\AVIConstants.au3"
-#include "core\GuiImageList.au3"
-#include "core\GuiButton.au3"
-#include "core\EditConstants.au3"
-#include "core\FontConstants.au3"
-#include "core\IE.au3"
-#include "core\Array.au3"
-#include "core\GuiRichEdit.au3"
-#include "core\GuiEdit.au3"
-#include "core\TabConstants.au3"
-#include "core\Memory.au3"
-#include "core\File.au3"
-
+#include "coreincludes.au3"
 
 ; The debug flag makes slight modifications to GUI elements and workflow to try and make development/testing easier. This bool is assigned later in boot
 Global $bDebug
