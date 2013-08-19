@@ -1,40 +1,30 @@
 #NoTrayIcon
-#Region ;**** Directives created by AutoIt3Wrapper_GUI ****
-#AutoIt3Wrapper_Icon=~resources\ICON_000_MAIN.ico
-#AutoIt3Wrapper_Outfile=Turbo Tools.exe
-#AutoIt3Wrapper_Compression=0
-#AutoIt3Wrapper_UseUpx=n
-#AutoIt3Wrapper_Res_Comment=Turbo Tools
-#AutoIt3Wrapper_Res_Description=All-in-one tool for customizing Android
-#AutoIt3Wrapper_Res_Fileversion=0.1.0.0
-#AutoIt3Wrapper_Res_LegalCopyright=CosmicDan 2012
-#AutoIt3Wrapper_Res_Language=1033
-#AutoIt3Wrapper_Res_requestedExecutionLevel=requireAdministrator
-#AutoIt3Wrapper_AU3Check_Stop_OnWarning=y
-#AutoIt3Wrapper_AU3Check_Parameters=-d
-#EndRegion ;**** Directives created by AutoIt3Wrapper_GUI ****
-
+#AutoIt3Wrapper_Run_AU3Check=n
 #Region ;~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~START Initialization
+; core AutoIt includes
 
-#include <GUIConstantsEx.au3>
-#include <GDIPlus.au3>
-#include <WinAPI.au3>
-#include <StructureConstants.au3>
-#include <Constants.au3>
-#include <WindowsConstants.au3>
-#include <ButtonConstants.au3>
-#include <StaticConstants.au3>
-#include <ProgressConstants.au3>
-#include <AVIConstants.au3>
-#include <GuiImageList.au3>
-#include <GuiButton.au3>
-#include <EditConstants.au3>
-#include <FontConstants.au3>
-#include <IE.au3>
-#include <Array.au3>
-#include <GuiRichEdit.au3>
-#include <GuiEdit.au3>
-#include <TabConstants.au3>
+#include "core\ProcessConstants.au3"
+#include "core\GUIConstantsEx.au3"
+#include "core\GDIPlus.au3"
+#include "core\WinAPI.au3"
+#include "core\StructureConstants.au3"
+#include "core\Constants.au3"
+#include "core\WindowsConstants.au3"
+#include "core\ButtonConstants.au3"
+#include "core\StaticConstants.au3"
+#include "core\ProgressConstants.au3"
+#include "core\AVIConstants.au3"
+#include "core\GuiImageList.au3"
+#include "core\GuiButton.au3"
+#include "core\EditConstants.au3"
+#include "core\FontConstants.au3"
+#include "core\IE.au3"
+#include "core\Array.au3"
+#include "core\GuiRichEdit.au3"
+#include "core\GuiEdit.au3"
+#include "core\TabConstants.au3"
+#include "core\Memory.au3"
+
 
 ; The debug flag makes slight modifications to GUI elements and workflow to try and make development/testing easier. This bool is assigned later in boot
 Global $bDebug
@@ -43,7 +33,7 @@ Global $hDebugConsoleWin = GUICreate("TT Console", 700, 300, 40, 40, BitOR($WS_P
 Global $hDebugConsoleTxt = _GUICtrlRichEdit_Create($hDebugConsoleWin, "", 0, 0, 700, 300, BitOR($ES_NOHIDESEL, $ES_MULTILINE, $ES_READONLY, $WS_HSCROLL, $WS_VSCROLL, $ES_AUTOVSCROLL))
 
 
-echo("[#] Turbo Tools booting...")
+ConsoleWrite("[#] Turbo Tools booting..." & @CRLF)
 
 _IEErrorHandlerRegister()
 
@@ -52,18 +42,18 @@ Opt("GUICloseOnESC", 0)
 Opt("MustDeclareVars", 1)
 Opt("WinTitleMatchMode", 3) ; exact title match
 
-#include "~udf\ArrayAdd2D.au3"
-#include "~udf\ExtMsgBox.au3"
-#include "~udf\GUICtrlSetOnHover.au3"
-#include "~udf\Icons.au3"
-#include "~udf\MD5.au3"
-#include "~udf\pZip.au3"
-#include "~udf\ReduceMem.au3"
-#include "~udf\Resources.au3"
-#include "~udf\WinAPIEx.au3"
+#include "..\inc\udf\ArrayAdd2D.au3"
+#include "..\inc\udf\ExtMsgBox.au3"
+#include "..\inc\udf\GUICtrlSetOnHover.au3"
+#include "..\inc\udf\Icons.au3"
+#include "..\inc\udf\MD5.au3"
+#include "..\inc\udf\pZip.au3"
+#include "..\inc\udf\ReduceMem.au3"
+#include "..\inc\udf\Resources.au3"
+#include "..\inc\udf\WinAPIEx.au3"
 
 
-Global $sResources = @ScriptDir & '\resources.dll'
+Global $sResources = @ScriptDir & '\..\resources.dll'
 Global $sSysTitle = "Turbo Tools"
 Global $sSysVer = FileGetVersion(@ScriptFullPath)
 Global $sSysRev = "Build " & FileGetVersion(@ScriptFullPath, "Timestamp")
@@ -112,8 +102,7 @@ If Not @Compiled Then
     $bCfgSplash = 0
     $bCfgQuickQuit = 1
 EndIf
-#include "~inc\boot.au3"
-Boot()
+#include "..\inc\boot.au3"
 
 #Region ;~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~MAIN
 
@@ -128,24 +117,6 @@ $hTTWinMain = GUICreate($sSysTitle, 700, 500, -1, -1, BitOR($WS_OVERLAPPEDWINDOW
     Global $hTTWinMainMinimumSize = WinGetPos($hTTWinMain) ; we need this for MY_WM_GETMINMAXINFO since the client size specified upon creation is exclusive of titlebar and borders
         GUIRegisterMsg(0x24, "MY_WM_GETMINMAXINFO")
         GUIRegisterMsg($WM_SIZE, "_WM_SIZE")
-
-echo ("[#] Loading core includes...")
-#include "~inc\buttonrow.au3"
-#include "~inc\errorhandler.au3"
-#include "~inc\datahelper.au3"
-#include "~inc\echo.au3"
-#include "~inc\config.au3"
-echo ("[#] Loading static page templates...")
-#include "~inc\page_static.au3"
-#include "~inc\page_static_error.au3"
-#include "~inc\page_static_options.au3"
-#include "~inc\page_static_welcome.au3"
-#include "~inc\page_static_selector2x2.au3"
-echo ("[#] Loading task page templates...")
-#include "~inc\page_task.au3"
-#include "~inc\page_task_selectrom.au3"
-echo ("[#] Loading Tool Windows...")
-#include "~inc\toolwindow_about.au3"
 
 ;The debug flag makes slight modifications to GUI elements and workflow to try and make development/testing easier
 If Not @Compiled Then
@@ -212,7 +183,7 @@ Func DrawPage($plugin, $inifile)
     $iPageIndex = findpage($plugin & '|' & $inifile, 1)
     ; error checks
     ; [TODO] Verify requested plugin folder exists
-    $sPage = @ScriptDir & '\plugins\' & $plugin & '\' & $inifile & '.ini'
+    $sPage = @ScriptDir & '\..\plugins\' & $plugin & '\' & $inifile & '.ini'
     If FileExists($sPage) = "0" Then
         echo ("[!] Error! Requested INI file at 'plugins\" & $plugin & "\" & $inifile & ".ini' does not exist - requested by " & $sPreviousPage)
         $sExtraData = "The page '" & $inifile & "' was not found in the plugin '" & $plugin & "'."
@@ -247,9 +218,9 @@ Func DrawPage($plugin, $inifile)
     Else
         Select
             Case $pagetype = "static"
-                DoPageStatic('plugins\' & $plugin, $inifile)
+                DoPageStatic('..\plugins\' & $plugin, $inifile)
             Case $pagetype = "task"
-                DoPageTask('plugins\' & $plugin, $inifile)
+                DoPageTask('..\plugins\' & $plugin, $inifile)
             Case Else
                 _ExtMsgBox($sResources, 0, "Internal Error", 'Error in plugins\' & $plugin & '\' & $inifile & '.ini' & @CRLF & _
                             'At section [common]; key "type"' & @CRLF & _
@@ -282,7 +253,7 @@ Func TTWinMainButtonEvent()
                 DialogAbout()
             EndIf
         Case $hTTBtn[3] ; custom
-            Local $sCustomTask = IniRead(@ScriptDir & '\plugins\' & $sCurrentPlugin & '\' & $sCurrentPage & '.ini', "buttonrow", "customtask", "debugpane")
+            Local $sCustomTask = IniRead(@ScriptDir & '\..\plugins\' & $sCurrentPlugin & '\' & $sCurrentPage & '.ini', "buttonrow", "customtask", "debugpane")
             If $sCustomTask = "debugpane" Then
                 GUISetState(@SW_SHOW, $hDebugConsoleWin) ; display console window
                 WinActivate("TT Console")
@@ -292,7 +263,7 @@ Func TTWinMainButtonEvent()
             EndIf
             ;$sPreviousPage = $sCurrentPage
         Case $hTTBtn[4] ; back
-            Local $sBackPage = IniRead(@ScriptDir & '\plugins\' & $sCurrentPlugin & '\' & $sCurrentPage & '.ini', "buttonrow", "backpage", "0")
+            Local $sBackPage = IniRead(@ScriptDir & '\..\plugins\' & $sCurrentPlugin & '\' & $sCurrentPage & '.ini', "buttonrow", "backpage", "0")
             If $sBackPage = "0" Then
                 _ExtMsgBox($sResources, 0, "Internal Error", 'Error in plugins\' & $sCurrentPlugin & '\' & $sCurrentPage & '.ini' & @CRLF & _
                     'At section [buttonrow]' & @CRLF & _
@@ -304,7 +275,7 @@ Func TTWinMainButtonEvent()
                 DrawPage($sCurrentPlugin, $sBackPage)
             EndIf
         Case $hTTBtn[5] ; next
-            Local $sNextPage = IniRead(@ScriptDir & '\plugins\' & $sCurrentPlugin & '\' & $sCurrentPage & '.ini', "buttonrow", "nextpage", "0")
+            Local $sNextPage = IniRead(@ScriptDir & '\..\plugins\' & $sCurrentPlugin & '\' & $sCurrentPage & '.ini', "buttonrow", "nextpage", "0")
             If $sNextPage = "0" Then
                 _ExtMsgBox($sResources, 0, "Internal Error", 'Error in plugins\' & $sCurrentPlugin & '\' & $sCurrentPage & '.ini' & @CRLF & _
                     'At section [buttonrow]' & @CRLF & _
@@ -327,7 +298,7 @@ Func TTWinMainButtonEvent()
                 EndIf
             EndIf
         Case $hTTBtn[6]
-            Local $sQuitButtonType = IniRead(@ScriptDir & '\plugins\' & $sCurrentPlugin & '\' & $sCurrentPage & '.ini', "buttonrow", "quit", "quit")
+            Local $sQuitButtonType = IniRead(@ScriptDir & '\..\plugins\' & $sCurrentPlugin & '\' & $sCurrentPage & '.ini', "buttonrow", "quit", "quit")
             If $sQuitButtonType = "cancel" Then
                 echo("    [!] Changed options have been discarded")
                 OptionsRestoreButtonrow() ; reset the buttonrow

@@ -951,9 +951,6 @@
 
 #Include-once
 
-#Include <StructureConstants.au3>
-#Include <WinAPI.au3>
-
 #EndRegion Header
 
 #Region Initialization

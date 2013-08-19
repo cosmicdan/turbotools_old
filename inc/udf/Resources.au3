@@ -1,7 +1,4 @@
 #include-once
-#include <WinAPI.au3>
-#include <GDIPlus.au3>
-#include <Memory.au3>
 
 _GDIPlus_Startup()
 

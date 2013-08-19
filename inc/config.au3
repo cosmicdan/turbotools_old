@@ -1,10 +1,10 @@
 Func DoConfig()
     ;tempdir
-    $sTempDir = IniRead(@ScriptDir & "\Settings.ini", "core", "tempdir", "0")
+    $sTempDir = IniRead(@ScriptDir & "\..\Settings.ini", "core", "tempdir", "0")
     If $sTempDir = "0" Then
         echo("    [i] Settings - tempdir not specified. Writing-out default value - 'usertemp' (currently " & @TempDir & ")")
         $sTempDir = "usertemp"
-        IniWrite(@ScriptDir & "\Settings.ini", "core", "tempdir", "usertemp")
+        IniWrite(@ScriptDir & "\..\Settings.ini", "core", "tempdir", "usertemp")
     EndIf
     $sTempDir = StringReplace($sTempDir, "usertemp", @TempDir) ;replace default/special 'usertemp' keyword with real temp path
     Switch _FileWriteAccessible($sTempDir)

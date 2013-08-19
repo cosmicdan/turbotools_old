@@ -277,11 +277,6 @@
 
 #Include-once
 
-#Include <Constants.au3>
-#Include <GDIPlus.au3>
-#Include <WinAPI.au3>
-#Include <WindowsConstants.au3>
-
 #EndRegion Header
 
 #Region Local Variables and Constants
