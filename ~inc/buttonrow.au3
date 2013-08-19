@@ -11,7 +11,7 @@ Func DoButtonBar()
         GUICtrlSetOnEvent(-1, "TTWinMainButtonEvent")
         GUICtrlSetResizing(-1, $GUI_DOCKSIZE + $GUI_DOCKLEFT)
         ButtonIcon(-1, 4)
-    $hTTBtn[3] = GUICtrlCreateButton("Advanced...", 274, 464, 100, 30) ; Third button (first in the right-aligned corner)
+    $hTTBtn[3] = GUICtrlCreateButton("Custom...", 274, 464, 100, 30) ; Third button (first in the right-aligned corner)
         GUICtrlSetOnEvent(-1, "TTWinMainButtonEvent")
         GUICtrlSetResizing(-1, $GUI_DOCKSIZE + $GUI_DOCKRIGHT)
         ButtonIcon(-1, 12)
@@ -68,18 +68,25 @@ Func DoButtonRow($key, $value, $sPluginIni)
                 EndIf
             EndIf
         Case ($key = "backpage")
-            If Not $value = "0" Then
-                echo ("    [i] 'Back' is mapped to " & $value);
+            If $value <> "0" Then
+                ;echo ("    [i] 'Back' is mapped to " & $value);
             EndIf
         Case ($key = "nextpage")
-            If Not $value = "0" Then
-                echo ("    [i] 'Next' is mapped to " & $value);
+            If $value <> "0" Then
+                ;echo ("    [i] 'Next' is mapped to " & $value);
+                If $value = "save" Then
+                    ; save keyword is special to save options, change the icon
+                    ButtonIcon($hTTBtn[5], 17)
+                EndIf
             EndIf
         Case $key = "nexttext"
             GUICtrlSetData($hTTBtn[5], $value)
         Case $key = "quit"
             If $value = "cancel" Then
-                echo ("    [!] Key/value 'quit=cancel' is specified but not yet implemented");
+                ; change to discard icon
+                ButtonIcon($hTTBtn[6], 18)
+                ; change text
+                GUICtrlSetData($hTTBtn[6], "Discard")
             EndIf
         Case Else
             _ExtMsgBox($sResources, 0, "Warning", 'Warning in ' & $sPluginIni & @CRLF & _

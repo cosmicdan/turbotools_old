@@ -57,7 +57,7 @@ Func page_static_error($sPluginPath, $sPluginFilename)
     If GUICtrlGetState($aPageCtrl[$iPageIndex][5]) > 0 Then
         GUICtrlSetState($aPageCtrl[$iPageIndex][5], $GUI_SHOW)
     Else
-        $aPageCtrl[$iPageIndex][5] = GUICtrlCreateLabel("Requested page not found" , 40, 28, $aTTWinMainCurrentSize[0]-80, 28)
+        $aPageCtrl[$iPageIndex][5] = GUICtrlCreateLabel("An unrecoverable error has occured" , 40, 28, $aTTWinMainCurrentSize[0]-80, 28)
         GUICtrlSetFont(-1, 10, 500, Default, "Trebuchet MS", 5)
         GUICtrlSetResizing(-1, $GUI_DOCKLEFT + $GUI_DOCKRIGHT + $GUI_DOCKTOP + $GUI_DOCKHEIGHT)
         GUICtrlSetBkColor(-1, $GUI_BKCOLOR_TRANSPARENT)

@@ -34,6 +34,7 @@
 #include <Array.au3>
 #include <GuiRichEdit.au3>
 #include <GuiEdit.au3>
+#include <TabConstants.au3>
 
 ; The debug flag makes slight modifications to GUI elements and workflow to try and make development/testing easier. This bool is assigned later in boot
 Global $bDebug
@@ -59,6 +60,7 @@ Opt("WinTitleMatchMode", 3) ; exact title match
 #include "~udf\pZip.au3"
 #include "~udf\ReduceMem.au3"
 #include "~udf\Resources.au3"
+#include "~udf\WinAPIEx.au3"
 
 
 Global $sResources = @ScriptDir & '\resources.dll'
@@ -66,6 +68,7 @@ Global $sSysTitle = "Turbo Tools"
 Global $sSysVer = FileGetVersion(@ScriptFullPath)
 Global $sSysRev = "Build " & FileGetVersion(@ScriptFullPath, "Timestamp")
 
+Global $hTTWinMain
 Global $aTTWinMainCurrentSize
 Global $aPluginPage[1] ;dynamic size array
 Global $aPageCtrl[1][99] ;dynamic size of pages, max of 99 elements per page
@@ -75,6 +78,7 @@ Global $bButtonRow_CustomTask
 Global $sCurrentPlugin
 Global $sCurrentPage
 Global $sPreviousPage ; used internally for pagination
+Global $sReturnPage ; used for returning from options
 Global $oIE = _IECreateEmbedded() ; persistent embedded IE object saves active x object (re/un)loading
 ; Data globals
 Global $iPageIndex ; needed since we can't pass parameters to control-event functions
@@ -83,11 +87,16 @@ Global $sPage ; as above
 Global $hToolWindow, $hToolWindowHyperlink1, $hToolWindowCloseBtn
 ; the "extra" data field is a somewhat arbitrary variable that is used in a variety of places to pass data around
 Global $sExtraData = False
+; The background color we need to apply to in-tab controls
+Global $sTabCtrlBk = _WinAPI_GetSysColor($COLOR_WINDOW)
+; Settings
+Global $sTempDir
+
 
 _ExtMsgBoxSet(1, 0, -1, -1, -1, -1)
 
 If FileExists($sResources) Then
-    ; TODO - Verify resources.dll file here
+    ; [TODO] - Verify resources.dll file here
 Else
     _ExtMsgBox(16, "Close", $sSysTitle, "Resources file not found. Please reinstall Turbo Tools.", 0)
     Exit
@@ -110,7 +119,7 @@ Boot()
 
 echo ("[#] Loading main GUI...")
 Opt("GUIResizeMode", $GUI_DOCKAUTO)
-Global $hTTWinMain = GUICreate($sSysTitle, 700, 500, -1, -1, BitOR($WS_OVERLAPPEDWINDOW, $WS_SIZEBOX))
+$hTTWinMain = GUICreate($sSysTitle, 700, 500, -1, -1, BitOR($WS_OVERLAPPEDWINDOW, $WS_SIZEBOX))
     setWindowIcon(1)
     GUISetFont(9, 400, Default, "Trebuchet MS", -1, 5)
     GUISetBkColor (0xeeecde)
@@ -118,15 +127,18 @@ Global $hTTWinMain = GUICreate($sSysTitle, 700, 500, -1, -1, BitOR($WS_OVERLAPPE
     GUISetOnEvent($GUI_EVENT_CLOSE, "TTWinMainSysEvent")
     Global $hTTWinMainMinimumSize = WinGetPos($hTTWinMain) ; we need this for MY_WM_GETMINMAXINFO since the client size specified upon creation is exclusive of titlebar and borders
         GUIRegisterMsg(0x24, "MY_WM_GETMINMAXINFO")
+        GUIRegisterMsg($WM_SIZE, "_WM_SIZE")
 
 echo ("[#] Loading core includes...")
 #include "~inc\buttonrow.au3"
 #include "~inc\errorhandler.au3"
 #include "~inc\datahelper.au3"
 #include "~inc\echo.au3"
+#include "~inc\config.au3"
 echo ("[#] Loading static page templates...")
 #include "~inc\page_static.au3"
 #include "~inc\page_static_error.au3"
+#include "~inc\page_static_options.au3"
 #include "~inc\page_static_welcome.au3"
 #include "~inc\page_static_selector2x2.au3"
 echo ("[#] Loading task page templates...")
@@ -259,8 +271,11 @@ Func TTWinMainButtonEvent()
     Switch @GUI_CtrlId
         Case $hTTBtn[1]
             If _GUICtrlButton_GetText($hTTBtn[1]) = "Options..." Then
-                _ExtMsgBox($sResources, 0, $sSysTitle, "Options not implemented yet.", 10, $hTTWinMain, 0, -13)
-                GUISwitch($hTTWinMain)
+                ;_ExtMsgBox($sResources, 0, $sSysTitle, "Options not implemented yet.", 10, $hTTWinMain, 0, -13)
+                ;GUISwitch($hTTWinMain)
+                $sReturnPage = $sCurrentPlugin & "|" & $sCurrentPage ; Return page must be set when either quit=cancel or nextpage=save
+                $sPreviousPage = $sCurrentPlugin & "|" & $sCurrentPage
+                DrawPage("core", "page_options")
             EndIf
         Case $hTTBtn[2]
             If _GUICtrlButton_GetText($hTTBtn[2]) = "About..." Then
@@ -297,15 +312,32 @@ Func TTWinMainButtonEvent()
                     0, $hTTWinMain, 0, -7)
                 GUISwitch($hTTWinMain)
             Else
-                $sPreviousPage = $sCurrentPlugin & "|" & $sCurrentPage
-                DrawPage($sCurrentPlugin, $sNextPage)
+                If $sNextPage = "save" Then
+                    ; special keyword for saving options
+                    ; [TODO] Save options to INI
+                    echo("    [#] All options have been saved")
+                    OptionsRestoreButtonrow() ; reset the buttonrow
+                    GUISetBkColor (0xeeecde, $hTTWinMain) ; restore the custom GUI background color
+                    Local $sReturnPluginPage = StringSplit($sReturnPage, "|")
+                    $sPreviousPage = $sCurrentPlugin & "|" & $sCurrentPage
+                    DrawPage($sReturnPluginPage[1], $sReturnPluginPage[2])
+                Else
+                    $sPreviousPage = $sCurrentPlugin & "|" & $sCurrentPage
+                    DrawPage($sCurrentPlugin, $sNextPage)
+                EndIf
             EndIf
         Case $hTTBtn[6]
-            ;If _GUICtrlButton_GetText($hTTBtn[6]) = "Cancel" Then
-                ; [TODO] do cancel stuff instead of quit
-            ;Else
+            Local $sQuitButtonType = IniRead(@ScriptDir & '\plugins\' & $sCurrentPlugin & '\' & $sCurrentPage & '.ini', "buttonrow", "quit", "quit")
+            If $sQuitButtonType = "cancel" Then
+                echo("    [!] Changed options have been discarded")
+                OptionsRestoreButtonrow() ; reset the buttonrow
+                GUISetBkColor (0xeeecde, $hTTWinMain) ; restore the custom GUI background color
+                Local $sReturnPluginPage = StringSplit($sReturnPage, "|")
+                $sPreviousPage = $sCurrentPlugin & "|" & $sCurrentPage
+                DrawPage($sReturnPluginPage[1], $sReturnPluginPage[2])
+            Else
                 TTQuit()
-            ;EndIf
+            EndIf
     EndSwitch
 EndFunc
 
@@ -332,9 +364,14 @@ Func TTQuit()
         GUISwitch($hTTWinMain)
         If $result = 1 Then
             echo ("[#] User quit")
+            GUIDelete($hDebugConsoleWin)
+            GUIDelete($hTTWinMain)
             Exit
         EndIf
     Else
+        echo ("[#] User quit")
+        GUIDelete($hDebugConsoleWin)
+        GUIDelete($hTTWinMain)
         Exit
     EndIf
 EndFunc
@@ -374,6 +411,11 @@ Func ButtonIcon32($button, $index)
     Local $icon = _GUIImageList_Create(32, 32, 5, 3)
         _GUIImageList_AddIcon($icon, $sResources, $index, true)
     _GUICtrlButton_SetImageList($button, $icon, 4, 1, -10, 1)
+EndFunc
+
+Func _WM_SIZE($hWnd, $iMsg, $wParam, $lParam)
+    $aTTWinMainCurrentSize = WinGetClientSize ($hTTWinMain)
+    Call("_WM_SIZE___" & $sCurrentPlugin & "_" & $sCurrentPage, 0, 0, 0, 0)
 EndFunc
 
 #EndRegion ;~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~

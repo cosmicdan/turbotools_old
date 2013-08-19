@@ -92,6 +92,7 @@ Func page_task_selectrom($sPluginPath, $sPluginFilename)
         GUICtrlSetState($aPageCtrl[$iPageIndex][8], $GUI_SHOW)
     Else
         $aPageCtrl[$iPageIndex][8] = GUICtrlCreateRadio("Directory", 40, 200, 105, 20)
+        GUICtrlSetBkColor(-1, 0xeeecde)
         GUICtrlSetResizing(-1, $GUI_DOCKWIDTH + $GUI_DOCKHEIGHT + $GUI_DOCKLEFT + $GUI_DOCKTOP)
         GUICtrlSetOnEvent(-1, "page_task_selectrom_action")
     EndIf
@@ -99,6 +100,7 @@ Func page_task_selectrom($sPluginPath, $sPluginFilename)
         GUICtrlSetState($aPageCtrl[$iPageIndex][9], $GUI_SHOW)
     Else
         $aPageCtrl[$iPageIndex][9] = GUICtrlCreateRadio("ZIP Package", 40, 230, 105, 20)
+        GUICtrlSetBkColor(-1, 0xeeecde)
         GUICtrlSetResizing(-1, $GUI_DOCKWIDTH + $GUI_DOCKHEIGHT + $GUI_DOCKLEFT + $GUI_DOCKTOP)
         GUICtrlSetOnEvent(-1, "page_task_selectrom_action")
     EndIf
@@ -183,7 +185,6 @@ Func page_task_selectrom_verify()
     GUICtrlSetState($aPageCtrl[$iPageIndex][13], $GUI_SHOW)
     If BitAND(GUICtrlRead($aPageCtrl[$iPageIndex][8]), $GUI_CHECKED) Then
         ;verify folder
-        echo ("Verify folder...")
         If Not FileExists($sPath) Then
             GuiCtrlSetData($aPageCtrl[$iPageIndex][13], "Directory invalid - " & $sPath)
         Else
@@ -196,7 +197,8 @@ Func page_task_selectrom_verify()
         EndIf
     Else
         ;verify zip
-        echo ("Verify ZIP...")
+        GuiCtrlSetData($aPageCtrl[$iPageIndex][13], $sVerifyText)
+
     EndIf
     GUICtrlSetState($aPageCtrl[$iPageIndex][12], $GUI_HIDE)
 EndFunc

@@ -19,8 +19,9 @@ Func Boot()
         GUICtrlSetData($hSplashBarctrl, 75)
     EndIf
 
+    DoConfig()
     ;PLUGIN READ
-    Sleep(1000)
+    ;Sleep(1000)
 
     If $bCfgSplash Then
         #Region ;~~~~~~~~~~START DrawOutSplashScreen
