@@ -24,6 +24,7 @@
 #include "core\GuiEdit.au3"
 #include "core\TabConstants.au3"
 #include "core\Memory.au3"
+#include "core\File.au3"
 
 
 ; The debug flag makes slight modifications to GUI elements and workflow to try and make development/testing easier. This bool is assigned later in boot
@@ -33,7 +34,7 @@ Global $hDebugConsoleWin = GUICreate("TT Console", 700, 300, 40, 40, BitOR($WS_P
 Global $hDebugConsoleTxt = _GUICtrlRichEdit_Create($hDebugConsoleWin, "", 0, 0, 700, 300, BitOR($ES_NOHIDESEL, $ES_MULTILINE, $ES_READONLY, $WS_HSCROLL, $WS_VSCROLL, $ES_AUTOVSCROLL))
 
 
-ConsoleWrite("[#] Turbo Tools booting..." & @CRLF)
+echo("[#] Turbo Tools booting...")
 
 _IEErrorHandlerRegister()
 

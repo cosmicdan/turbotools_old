@@ -44,3 +44,32 @@ Func _FileWriteAccessible($sFile)
     _WinAPI_CloseHandle($hFile)
     Return 1 ; Success
 EndFunc   ;==>_FileWriteAccessible
+
+Func DoPluginIncludes($sScanPlugin)
+    ; [TODO] Check if the plugin is disabled
+    Local $hIncludeFile
+    Local $sIncludeFileContents
+    If FileExists(@ScriptDir & "\..\plugins\current_includes.au3") Then
+        echo("    [#] Plugin list found, scanning and adding new includes if required...")
+        $hIncludeFile = FileOpen(@ScriptDir & "\..\plugins\current_includes.au3", 1)
+        $sIncludeFileContents = FileRead (@ScriptDir & "\..\plugins\current_includes.au3")
+    Else
+        ; first run
+        echo("    [#] Plugin list NOT found, searching for all includes and adding ...")
+        $hIncludeFile = FileOpen(@ScriptDir & "\..\plugins\current_includes.au3", 1)
+        $sIncludeFileContents = ""
+    EndIf
+    Local $sIncludeLine
+    Local $sIncludes = _FileListToArray(@ScriptDir & "\..\plugins\" & $sScanPlugin & "\inc", "*.au3", 1)
+    For $i = 1 To $sIncludes[0]
+        $sIncludeLine = '#include "' & $sScanPlugin & '\inc\' & $sIncludes[$i] & '"'
+        ;echo($sIncludeLine)
+        Local $iPosition = StringInStr($sIncludeFileContents, $sIncludeLine)
+        If $iPosition = 0 Then
+            ; not found, add it to the file
+            FileWriteLine($hIncludeFile, $sIncludeLine)
+            echo("        [i] Added " & $sScanPlugin & "\inc\" & $sIncludes[$i])
+        EndIf
+    Next
+    FileClose($hIncludeFile)
+EndFunc

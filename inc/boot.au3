@@ -26,17 +26,11 @@ echo ("[#] Loading core includes...")
 #include "datahelper.au3"
 #include "echo.au3"
 #include "config.au3"
-echo ("[#] Loading static page templates...")
-#include "..\plugins\core\inc\page_static.au3"
-#include "..\plugins\core\inc\page_static_error.au3"
-#include "..\plugins\core\inc\page_static_options.au3"
-#include "..\plugins\core\inc\page_static_welcome.au3"
-#include "..\plugins\core\inc\page_static_selector2x2.au3"
-echo ("[#] Loading task page templates...")
-#include "..\plugins\core\inc\page_task.au3"
-#include "..\plugins\core\inc\page_task_selectrom.au3"
-echo ("[#] Loading Tool Windows...")
-#include "..\1plugins\core\inc\toolwindow_about.au3"
+echo ("[#] Scanning plugin 'core'...")
+DoPluginIncludes("core")
+; [TODO] Scan other folders
+echo ("[#] Loading plugins...")
+#include "..\plugins\current_includes.au3"
 
 If $bCfgSplash Then
     #Region ;~~~~~~~~~~START DrawOutSplashScreen
